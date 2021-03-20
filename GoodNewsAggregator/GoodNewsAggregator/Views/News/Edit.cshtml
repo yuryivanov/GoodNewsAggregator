@@ -1,0 +1,14 @@
+﻿@model GoodNewsAggregator.Models.NewsModel
+@{
+    ViewData["Title"] = "Edit News";
+}
+
+<form asp-action="Edit">
+    <label>Заголовок</label>
+    <input type="text" name="title" value=@Model.Title/></br>
+    <label>Содержание</label>
+    <input type="text" name="description" value=@Model.Description/></br>
+    <label>Текст</label>
+    <input type="text" name="text" value=@Model.Text/></br>
+    <input type="submit" value="Сохранить">
+</form>

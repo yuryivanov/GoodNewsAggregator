@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator", "GoodNewsAggregator\GoodNewsAggregator.csproj", "{CFBF50FE-6494-4E76-B5E7-3BA237C641F9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.DAL.Core", "GoofNewsAggregator.Data\GoodNewsAggregator.DAL.Core.csproj", "{DE3D1219-9318-44E3-88D1-A779EDD2E1E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GoodNewsAggregator.DAL", "GoodNewsAggregator.DAL", "{D92E3C77-7B88-4424-A8A6-54C02A27D676}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GoodNewsAggregator.Core", "GoodNewsAggregator.Core", "{647FF6BF-6824-4C34-A3E1-97C5AB9ADEE6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.Core.Services.Interfaces", "GoodNewsAggregator.Core.Interfaces.Services\GoodNewsAggregator.Core.Services.Interfaces.csproj", "{6ACF6D8B-7E53-4851-A0C1-8B38E9D96C69}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.Core.DataTransferObjects", "GoodNewsAggregator.Core.DataTransferObjects\GoodNewsAggregator.Core.DataTransferObjects.csproj", "{A1A59540-8B9D-4257-8899-AC8F771716CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{480AAEAA-8432-41D9-B8E6-E7BE60ACA762}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.Services.Implementation", "GoodNewsAggregator.Services.Implementation\GoodNewsAggregator.Services.Implementation.csproj", "{7D4DD147-4095-4534-A611-A82D05FA8132}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.DAL.Repositories.Implementation", "GoodNewsAggregator.DAL.Repositories\GoodNewsAggregator.DAL.Repositories.Implementation.csproj", "{A70AB826-2D30-4768-BD83-1C1C118792CA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.DAL.Repositories.Interfaces", "GoodNewsAggregator.DAL.RepositoriesImplementation\GoodNewsAggregator.DAL.Repositories.Interfaces.csproj", "{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CFBF50FE-6494-4E76-B5E7-3BA237C641F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFBF50FE-6494-4E76-B5E7-3BA237C641F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFBF50FE-6494-4E76-B5E7-3BA237C641F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFBF50FE-6494-4E76-B5E7-3BA237C641F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE3D1219-9318-44E3-88D1-A779EDD2E1E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE3D1219-9318-44E3-88D1-A779EDD2E1E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE3D1219-9318-44E3-88D1-A779EDD2E1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE3D1219-9318-44E3-88D1-A779EDD2E1E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ACF6D8B-7E53-4851-A0C1-8B38E9D96C69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ACF6D8B-7E53-4851-A0C1-8B38E9D96C69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ACF6D8B-7E53-4851-A0C1-8B38E9D96C69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ACF6D8B-7E53-4851-A0C1-8B38E9D96C69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1A59540-8B9D-4257-8899-AC8F771716CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1A59540-8B9D-4257-8899-AC8F771716CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1A59540-8B9D-4257-8899-AC8F771716CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1A59540-8B9D-4257-8899-AC8F771716CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D4DD147-4095-4534-A611-A82D05FA8132}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D4DD147-4095-4534-A611-A82D05FA8132}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D4DD147-4095-4534-A611-A82D05FA8132}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D4DD147-4095-4534-A611-A82D05FA8132}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A70AB826-2D30-4768-BD83-1C1C118792CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A70AB826-2D30-4768-BD83-1C1C118792CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A70AB826-2D30-4768-BD83-1C1C118792CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A70AB826-2D30-4768-BD83-1C1C118792CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DE3D1219-9318-44E3-88D1-A779EDD2E1E8} = {D92E3C77-7B88-4424-A8A6-54C02A27D676}
+		{6ACF6D8B-7E53-4851-A0C1-8B38E9D96C69} = {647FF6BF-6824-4C34-A3E1-97C5AB9ADEE6}
+		{A1A59540-8B9D-4257-8899-AC8F771716CD} = {647FF6BF-6824-4C34-A3E1-97C5AB9ADEE6}
+		{7D4DD147-4095-4534-A611-A82D05FA8132} = {480AAEAA-8432-41D9-B8E6-E7BE60ACA762}
+		{A70AB826-2D30-4768-BD83-1C1C118792CA} = {D92E3C77-7B88-4424-A8A6-54C02A27D676}
+		{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF} = {D92E3C77-7B88-4424-A8A6-54C02A27D676}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {130BE430-608B-49A3-BF77-C8B7508533B4}
+	EndGlobalSection
+EndGlobal

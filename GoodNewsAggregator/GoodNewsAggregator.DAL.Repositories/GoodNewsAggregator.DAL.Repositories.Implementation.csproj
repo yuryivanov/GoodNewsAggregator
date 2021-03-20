@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GoodNewsAggregator.DAL.RepositoriesImplementation\GoodNewsAggregator.DAL.Repositories.Interfaces.csproj" />
+    <ProjectReference Include="..\GoofNewsAggregator.Data\GoodNewsAggregator.DAL.Core.csproj" />
+  </ItemGroup>
+
+</Project>
