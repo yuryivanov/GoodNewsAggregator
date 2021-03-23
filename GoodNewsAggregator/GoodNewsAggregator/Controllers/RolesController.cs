@@ -11,11 +11,6 @@ namespace GoodNewsAggregator.Controllers
 {
     public class RolesController : Controller
     {
-        private readonly GoodNewsAggregatorContext _context;
-
-        public RolesController(GoodNewsAggregatorContext context)
-        {
-            _context = context;
-        }       
+        
     }
 }

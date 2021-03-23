@@ -22,7 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GoodNewsAggregator.Core.DataTransferObjects\GoodNewsAggregator.Core.DataTransferObjects.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.Core.Interfaces.Services\GoodNewsAggregator.Core.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\GoodNewsAggregator.DAL.RepositoriesImplementation\GoodNewsAggregator.DAL.Repositories.Interfaces.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.DAL.Repositories\GoodNewsAggregator.DAL.Repositories.Implementation.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.Services.Implementation\GoodNewsAggregator.Services.Implementation.csproj" />
     <ProjectReference Include="..\GoofNewsAggregator.Data\GoodNewsAggregator.DAL.Core.csproj" />

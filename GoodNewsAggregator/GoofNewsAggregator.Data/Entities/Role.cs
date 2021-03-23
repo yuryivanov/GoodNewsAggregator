@@ -4,9 +4,9 @@ using System.Text;
 
 namespace GoodNewsAggregator.DAL.Core.Entities
 {
-    public class Role
+    public class Role : IBaseEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
 

@@ -10,12 +10,7 @@ using GoodNewsAggregator.DAL.Core;
 namespace GoodNewsAggregator.Controllers
 {
     public class CommentsController : Controller
-    {
-        private readonly GoodNewsAggregatorContext _context;
+    {       
 
-        public CommentsController(GoodNewsAggregatorContext context)
-        {
-            _context = context;
-        }       
     }
 }

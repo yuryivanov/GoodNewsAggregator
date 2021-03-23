@@ -14,6 +14,7 @@ namespace GoodNewsAggregator.DAL.Core
         public DbSet<RSS> RSS { get; set; }
         public DbSet<User> Users { get; set; }
 
-        public GoodNewsAggregatorContext(DbContextOptions<GoodNewsAggregatorContext> options) : base(options) { }
+        public GoodNewsAggregatorContext(DbContextOptions<GoodNewsAggregatorContext> options) : base(options) 
+        { }
     }
 }

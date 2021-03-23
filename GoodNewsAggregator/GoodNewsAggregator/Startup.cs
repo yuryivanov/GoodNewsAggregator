@@ -18,40 +18,54 @@ using GoodNewsAggregator.DAL.Core;
 using Microsoft.AspNetCore.Mvc.Routing;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Services.Implementation;
-using GoodNewsAggregator.DAL.Repositories;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
+using GoodNewsAggregator.DAL.Repositories.Implementation;
+using GoodNewsAggregator.DAL.Core.Entities;
 
 namespace GoodNewsAggregator
 {
     public class Startup
     {
-        private readonly INewsService _newsService;
         private readonly INewsRepository _newsRepository;
         private readonly IRSSRepository _rSSRepository;
-
-        public Startup(IConfiguration configuration, INewsService newsService, INewsRepository newsRepository, IRSSRepository rSSRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly INewsService _newsService;
+        public Startup(IConfiguration configuration,
+            INewsRepository newsRepository,
+            IRSSRepository rSSRepository,
+            IUnitOfWork unitOfWork,
+            INewsService newsService)
         {
-            _newsService = newsService;
-            _newsRepository = newsRepository;
-            _rSSRepository = rSSRepository;
             Configuration = configuration;
+            newsRepository = _newsRepository;
+            rSSRepository = _rSSRepository;
+            unitOfWork = _unitOfWork;
+            newsService = _newsService;
         }
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
-        {            
-            services.AddDbContext<GoodNewsAggregatorContext>(options 
+        {
+            services.AddDbContext<GoodNewsAggregatorContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddTransient<INewsService, NewsService>();
-            services.AddTransient<INewsRepository, NewsRepository>();
-            services.AddTransient<IRSSRepository, RSSRepository>();
+
+            services.AddTransient<IRepository<News>, Repository<News>>();
+            services.AddTransient<IRepository<RSS>, Repository<RSS>>();
+
+            //services.AddTransient<INewsRepository, NewsRepository>();
+            //services.AddTransient<IRSSRepository, RSSRepository>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<INewsService, NewsService>();
+
 
             services.AddControllersWithViews();
-            services.AddSession(options => {
+            services.AddSession(options =>
+            {
                 //options.Cookie.IsEssential = true;
                 //options.IdleTimeout = TimeSpan.FromSeconds(3600);
-            });            
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory factory)
@@ -110,11 +124,11 @@ namespace GoodNewsAggregator
             app.Use(async (context, next) =>
             {
                 if (!(context.Request.Cookies.ContainsKey("cookiesName")))
-                {                
+                {
                     context.Response.Cookies.Append("cookiesName", "GoodNewsAggregatorCookiesName");
                 }
                 await next.Invoke();
-            });           
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

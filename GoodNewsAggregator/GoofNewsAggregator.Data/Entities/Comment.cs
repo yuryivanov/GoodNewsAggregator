@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GoodNewsAggregator.DAL.Core.Entities
 {
-    public class Comment
+    public class Comment : IBaseEntity
     {
         public Guid Id { get; set; }
 

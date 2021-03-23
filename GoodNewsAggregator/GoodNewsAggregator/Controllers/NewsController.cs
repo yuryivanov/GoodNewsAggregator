@@ -10,23 +10,24 @@ using System.Diagnostics;
 using System.Linq;
 using System.IO;
 using GoodNewsAggregator.DAL.Core;
+using GoodNewsAggregator.Core.Services.Interfaces;
 
 namespace GoodNewsAggregator.Controllers
 {
     public class NewsController : Controller
     {
-        private readonly GoodNewsAggregatorContext _context;
+        private readonly INewsService _newsService;
 
-        public NewsController(GoodNewsAggregatorContext context)
+        public NewsController(INewsService newsService)
         {
-            _context = context;
+            _newsService = newsService;
         }
 
         // GET: News/AllNews
         [HttpGet]
         public IActionResult AllNews()
         {
-            return View(_context.News);
+            return View();
         }        
 
         // GET: News/SingleNews
@@ -41,14 +42,7 @@ namespace GoodNewsAggregator.Controllers
         public IActionResult Edit(Guid id)
         {
             string idd = Request.Query.FirstOrDefault(r => r.Key == "id").Value;
-            foreach (var item in _context.News)
-            {
-                if (item.Id == id)
-                {
-                    return View(item);
-                }
-            }
-
+        
             return RedirectToAction(nameof(AllNews));            
         }
 

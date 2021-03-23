@@ -7,12 +7,7 @@ using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.DAL.Repositories.Interfaces
 {
-    public interface IRSSRepository
+    public interface IRSSRepository : IRepository<RSS>
     {
-        Task Add(RSS rss);
-        Task<RSS> GetRSSById(Guid id);
-        IQueryable<RSS> GetRSS();
-        Task Update(RSS rss);
-        Task Remove(Guid id);
     }
 }

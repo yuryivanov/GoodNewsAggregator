@@ -7,12 +7,7 @@ using GoodNewsAggregator.DAL.Core.Entities;
 
 namespace GoodNewsAggregator.DAL.Repositories.Interfaces
 {
-    public interface INewsRepository
+    public interface INewsRepository : IRepository<News>
     {
-        Task Add(News news);
-        Task<News> GetNewsById(Guid id);
-        IQueryable<News> GetNews();
-        Task Update(News news);
-        Task Remove(Guid id);
     }
 }

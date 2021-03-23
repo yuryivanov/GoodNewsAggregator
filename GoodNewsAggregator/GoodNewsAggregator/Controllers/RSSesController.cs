@@ -11,11 +11,6 @@ namespace GoodNewsAggregator.Controllers
 {
     public class RSSesController : Controller
     {
-        private readonly GoodNewsAggregatorContext _context;
-
-        public RSSesController(GoodNewsAggregatorContext context)
-        {
-            _context = context;
-        }        
+       
     }
 }
