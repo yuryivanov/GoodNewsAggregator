@@ -50,11 +50,8 @@ namespace GoodNewsAggregator
             services.AddDbContext<GoodNewsAggregatorContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<IRepository<News>, Repository<News>>();
-            services.AddTransient<IRepository<RSS>, Repository<RSS>>();
-
-            //services.AddTransient<INewsRepository, NewsRepository>();
-            //services.AddTransient<IRSSRepository, RSSRepository>();
+            services.AddScoped<INewsRepository, NewsRepository>();
+            services.AddScoped<IRSSRepository, RSSRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<INewsService, NewsService>();
