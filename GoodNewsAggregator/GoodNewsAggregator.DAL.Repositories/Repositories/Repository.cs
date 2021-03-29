@@ -25,14 +25,16 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation.Repositories
             return await Table.FirstOrDefaultAsync(entity => entity.Id.Equals(id));
         }
 
-        IQueryable<T> IRepository<T>.FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        public IQueryable<T> FindBy(Expression<Func<T, bool>> predicate,
+              params Expression<Func<T, object>>[] includes)
         {
             var result = Table.Where(predicate);
             if (includes.Any())
             {
-                result = includes.Aggregate(result,
-                    (current, include) 
-                    => current.Include(include));
+                result = includes
+                    .Aggregate(result,
+                        (current, include)
+                            => current.Include(include));
             }
 
             return result;

@@ -62,19 +62,23 @@ namespace GoodNewsAggregator.Services.Implementation
         }
 
         public async Task<IEnumerable<NewsDto>> FindNews()
-        {
-            return await _unitOfWork.News.FindBy(n
-                        => n.RSSId.Equals(n.RSSId.GetValueOrDefault())).Select(n => new NewsDto()
-                        {
-                            Id = n.Id,
-                            Address = n.Address,
-                            Description = n.Description,
-                            GoodnessCoefficient = n.GoodnessCoefficient,
-                            PublicationDate = n.PublicationDate,
-                            RSS_Id = n.RSSId,
-                            Text = n.Text,
-                            Title = n.Title
-                        }).ToListAsync();
+        {            
+            var news = await _unitOfWork.News.FindBy(n
+                        => n.RSSId.Equals(n.RSSId.GetValueOrDefault()))
+                    .ToListAsync();
+
+
+            return news.Select(n => new NewsDto()
+            {
+                Id = n.Id,
+                Address = n.Address,
+                Description = n.Description,
+                GoodnessCoefficient = n.GoodnessCoefficient,
+                PublicationDate = n.PublicationDate,
+                RSS_Id = n.RSSId,
+                Text = n.Text,
+                Title = n.Title
+            }).ToList();
         }
 
         public async Task<NewsDto> GetNewsById(Guid? id)

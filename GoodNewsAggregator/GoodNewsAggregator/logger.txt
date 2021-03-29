@@ -87,3 +87,21 @@ Content root path: D:\it-academy\GoodNewsAggregator\GoodNewsAggregator\GoodNewsA
 Info Processing request: /
 Eror Processing request: /
 An unhandled exception has occurred while executing the request.
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: D:\it-academy\GoodNewsAggregator\GoodNewsAggregator\GoodNewsAggregator
+Info Processing request: /
+Eror Processing request: /
+An unhandled exception has occurred while executing the request.
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: D:\it-academy\GoodNewsAggregator\GoodNewsAggregator\GoodNewsAggregator
+Info Processing request: /
+Eror Processing request: /
+An unhandled exception has occurred while executing the request.
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: D:\it-academy\GoodNewsAggregator\GoodNewsAggregator\GoodNewsAggregator
+Info Processing request: /
+Eror Processing request: /
+An unhandled exception has occurred while executing the request.
