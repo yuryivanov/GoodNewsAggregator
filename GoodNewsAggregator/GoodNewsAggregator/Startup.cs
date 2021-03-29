@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.Services.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
+using GoodNewsAggregator.DAL.Repositories.Implementation.Repositories;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Core.Entities;
 
@@ -26,21 +27,9 @@ namespace GoodNewsAggregator
 {
     public class Startup
     {
-        private readonly INewsRepository _newsRepository;
-        private readonly IRSSRepository _rSSRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly INewsService _newsService;
-        public Startup(IConfiguration configuration,
-            INewsRepository newsRepository,
-            IRSSRepository rSSRepository,
-            IUnitOfWork unitOfWork,
-            INewsService newsService)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            newsRepository = _newsRepository;
-            rSSRepository = _rSSRepository;
-            unitOfWork = _unitOfWork;
-            newsService = _newsService;
         }
 
         public IConfiguration Configuration { get; }

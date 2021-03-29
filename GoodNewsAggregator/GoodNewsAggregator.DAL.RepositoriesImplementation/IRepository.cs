@@ -12,7 +12,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Interfaces
     {
         Task<T> GetEntityById(Guid id);
 
-        IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T,object>>[] includes);
+        IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
 
         Task Add(T entity);
 

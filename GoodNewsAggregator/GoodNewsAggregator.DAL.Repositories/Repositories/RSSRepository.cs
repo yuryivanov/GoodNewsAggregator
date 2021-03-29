@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using System.Collections.Generic;
 
-namespace GoodNewsAggregator.DAL.Repositories.Implementation
+namespace GoodNewsAggregator.DAL.Repositories.Implementation.Repositories
 {
     public class RSSRepository : Repository<RSS>, IRSSRepository
     {
-        public RSSRepository(GoodNewsAggregatorContext context, DbSet<RSS> table)
-            : base(context, table)
+        public RSSRepository(GoodNewsAggregatorContext context)
+            : base(context)
         {           
         }
     }    

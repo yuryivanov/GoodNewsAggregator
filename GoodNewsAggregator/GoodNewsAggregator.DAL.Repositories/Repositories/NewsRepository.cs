@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using System.Collections.Generic;
 
-namespace GoodNewsAggregator.DAL.Repositories.Implementation
+namespace GoodNewsAggregator.DAL.Repositories.Implementation.Repositories
 {
     public class NewsRepository : Repository<News>, INewsRepository
     {
-        public NewsRepository(GoodNewsAggregatorContext context, DbSet<News> table)
-            : base(context, table)
+        public NewsRepository(GoodNewsAggregatorContext context)
+            : base(context)
         {           
         }
     }    

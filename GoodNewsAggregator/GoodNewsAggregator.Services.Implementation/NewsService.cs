@@ -22,7 +22,7 @@ namespace GoodNewsAggregator.Services.Implementation
 
         public async Task AddRangeNews(IEnumerable<NewsDto> news)
         {
-            var addedNews = news.Select(entity=>new News()
+            var addedNews = news.Select(entity => new News()
             {
                 Id = entity.Id,
                 Address = entity.Address,
@@ -33,13 +33,13 @@ namespace GoodNewsAggregator.Services.Implementation
                 Text = entity.Text,
                 Title = entity.Title
             }).ToList();
-            
+
             await _unitOfWork.News.AddRange(addedNews);
             await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<NewsDto> EditNews(NewsDto news)
-        {         
+        {
             var oldNews = await _unitOfWork.News.GetEntityById(news.Id);
 
             var EditedNews = new News()
@@ -63,17 +63,18 @@ namespace GoodNewsAggregator.Services.Implementation
 
         public async Task<IEnumerable<NewsDto>> FindNews()
         {
-            return await _unitOfWork.News.FindBy(n=>n.Id.Equals(n.Id), null).Select(n=>new NewsDto()
-            {
-                Id = n.Id,
-                Address = n.Address,
-                Description = n.Description,
-                GoodnessCoefficient = n.GoodnessCoefficient,
-                PublicationDate = n.PublicationDate,
-                RSS_Id = n.RSSId,
-                Text = n.Text,
-                Title = n.Title
-            }).ToListAsync();
+            return await _unitOfWork.News.FindBy(n
+                        => n.RSSId.Equals(n.RSSId.GetValueOrDefault())).Select(n => new NewsDto()
+                        {
+                            Id = n.Id,
+                            Address = n.Address,
+                            Description = n.Description,
+                            GoodnessCoefficient = n.GoodnessCoefficient,
+                            PublicationDate = n.PublicationDate,
+                            RSS_Id = n.RSSId,
+                            Text = n.Text,
+                            Title = n.Title
+                        }).ToListAsync();
         }
 
         public async Task<NewsDto> GetNewsById(Guid? id)
@@ -98,7 +99,7 @@ namespace GoodNewsAggregator.Services.Implementation
             if (id.HasValue)
             {
                 //Chosen news
-                news = await _unitOfWork.News.FindBy(n=>n.Id.Equals(n.Id), null).Where(news => news.RSSId.Equals(id.GetValueOrDefault())).Select(entity=>new NewsDto()
+                news = await _unitOfWork.News.FindBy(n => n.Id.Equals(n.Id), n => n).Where(news => news.RSSId.Equals(id.GetValueOrDefault())).Select(entity => new NewsDto()
                 {
                     Id = entity.Id,
                     Address = entity.Address,
@@ -113,7 +114,7 @@ namespace GoodNewsAggregator.Services.Implementation
             else
             {
                 //All news
-                news = await _unitOfWork.News.FindBy(n => n.Id.Equals(n.Id), null).Select(entity => new NewsDto()
+                news = await _unitOfWork.News.FindBy(n => n.Id.Equals(n.Id), n => n).Select(entity => new NewsDto()
                 {
                     Id = entity.Id,
                     Address = entity.Address,
@@ -135,7 +136,7 @@ namespace GoodNewsAggregator.Services.Implementation
             if (id.HasValue)
             {
                 //Chosen news
-                newsWithRSSAddress = await _unitOfWork.News.FindBy(n => n.Id.Equals(n.Id), null).Where(news => news.Id.Equals(id.GetValueOrDefault())).Select(n => new NewsWithRSSAddressDto()
+                newsWithRSSAddress = await _unitOfWork.News.FindBy(n => n.Id.Equals(n.Id), n => n).Where(news => news.Id.Equals(id.GetValueOrDefault())).Select(n => new NewsWithRSSAddressDto()
                 {
                     Id = n.Id,
                     Address = n.Address,
@@ -151,7 +152,7 @@ namespace GoodNewsAggregator.Services.Implementation
             else
             {
                 //All news
-                newsWithRSSAddress = await _unitOfWork.News.FindBy(n => n.Id.Equals(n.Id), n=>n.RSS).Select(n => new NewsWithRSSAddressDto()
+                newsWithRSSAddress = await _unitOfWork.News.FindBy(n => n.Id.Equals(n.Id), n => n.RSS).Select(n => new NewsWithRSSAddressDto()
                 {
                     Id = n.Id,
                     Address = n.Address,

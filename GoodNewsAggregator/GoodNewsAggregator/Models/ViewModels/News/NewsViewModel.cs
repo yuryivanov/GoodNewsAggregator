@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoodNewsAggregator.Models.ViewModels
+namespace GoodNewsAggregator.Models.ViewModels.News
 {
     public class NewsViewModel
     {

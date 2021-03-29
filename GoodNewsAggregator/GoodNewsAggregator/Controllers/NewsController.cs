@@ -11,39 +11,59 @@ using System.Linq;
 using System.IO;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using GoodNewsAggregator.DAL.Repositories.Implementation;
+using GoodNewsAggregator.Models.ViewModels.News;
 
 namespace GoodNewsAggregator.Controllers
 {
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public NewsController(INewsService newsService)
+        public NewsController(INewsService newsService, IUnitOfWork unitOfWork)
         {
             _newsService = newsService;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: News/AllNews
         [HttpGet]
-        public IActionResult AllNews()
+        public async Task<IActionResult> AllNews()
         {
+            var model = await _newsService.FindNews();
+            //return View(model);
             return View();
         }        
 
         // GET: News/SingleNews
         [HttpGet]
-        public IActionResult SingleNews()
+        public async Task<IActionResult> SingleNews(Guid id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var model = await _newsService.GetNewsById(id);
+                return View(model);
+            }            
         }
 
         // GET: News/Edit
         [HttpGet]
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            string idd = Request.Query.FirstOrDefault(r => r.Key == "id").Value;
-        
-            return RedirectToAction(nameof(AllNews));            
+            if (id == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var model = await _newsService.GetNewsById(id);
+                return View(model);
+            }
         }
 
         // POST: News/Edit

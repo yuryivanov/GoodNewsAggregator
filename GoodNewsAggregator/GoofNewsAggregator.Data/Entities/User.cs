@@ -11,7 +11,7 @@ namespace GoodNewsAggregator.DAL.Core.Entities
         public string Login { get; set; }
         public string PasswordHash { get; set; }
 
-        public int RoleId { get; set; }
+        public Guid RoleId { get; set; }
         public virtual Role Role { get; set; }
 
         public virtual ICollection<Comment> CommentCollection { get; set; }

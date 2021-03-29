@@ -9,17 +9,16 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoodNewsAggregator.DAL.Repositories.Implementation
+namespace GoodNewsAggregator.DAL.Repositories.Implementation.Repositories
 {
     public abstract class Repository<T> : IRepository<T> where T : class, IBaseEntity
     {
         protected readonly GoodNewsAggregatorContext Db;
         protected readonly DbSet<T> Table;
 
-        protected Repository(GoodNewsAggregatorContext context, DbSet<T> table)
+        protected Repository(GoodNewsAggregatorContext context)
         {
             Db = context;
-            Table = Db.Set<T>(); //return table with type T
         }
         public async Task<T> GetEntityById(Guid id)
         {
