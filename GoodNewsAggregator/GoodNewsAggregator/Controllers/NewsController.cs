@@ -31,9 +31,21 @@ namespace GoodNewsAggregator.Controllers
         [HttpGet]
         public async Task<IActionResult> AllNews()
         {
-            var model = await _newsService.FindNews();
-            //return View(model);
-            return View();
+            var newsDtos = await _newsService.FindNews();
+
+            var newsViewModels = newsDtos.Select(n => new NewsViewModel()
+            {
+                Id = n.Id,
+                Address = n.Address,
+                Description = n.Description,
+                GoodnessCoefficient = n.GoodnessCoefficient,
+                PublicationDate = n.PublicationDate,
+                RSS_Id = n.RSS_Id,
+                Text = n.Text,
+                Title = n.Title
+            }).ToList();
+
+            return View(newsViewModels);
         }        
 
         // GET: News/SingleNews

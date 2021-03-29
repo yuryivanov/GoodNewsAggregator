@@ -105,3 +105,57 @@ Content root path: D:\it-academy\GoodNewsAggregator\GoodNewsAggregator\GoodNewsA
 Info Processing request: /
 Eror Processing request: /
 An unhandled exception has occurred while executing the request.
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: D:\it-academy\New folder (2)\GoodNewsAggregator\GoodNewsAggregator\GoodNewsAggregator
+Info Processing request: /
+Eror Processing request: /
+Error unprotecting the session cookie.
+An unhandled exception has occurred while executing the request.
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: D:\it-academy\New folder (2)\GoodNewsAggregator\GoodNewsAggregator\GoodNewsAggregator
+Info Processing request: /
+Eror Processing request: /
+An unhandled exception has occurred while executing the request.
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: D:\it-academy\New folder (2)\GoodNewsAggregator\GoodNewsAggregator\GoodNewsAggregator
+Info Processing request: /
+Eror Processing request: /
+Info Processing request: /lib/bootstrap/dist/css/bootstrap-grid.css/bootstrap-grid.css.map
+Info Processing request: /lib/bootstrap/dist/css/bootstrap-grid.css/bootstrap-grid.min.css/bootstrap-grid.min.css.map
+Info Processing request: /lib/bootstrap/dist/css/bootstrap-reboot.css/bootstrap-reboot.min.css/bootstrap-reboot.min.css.map
+Eror Processing request: /lib/bootstrap/dist/css/bootstrap-reboot.css/bootstrap-reboot.min.css/bootstrap-reboot.min.css.map
+An unhandled exception has occurred while executing the request.
+An unhandled exception has occurred while executing the request.
+Connection ID "17942340917054668817", Request ID "80000012-0000-f900-b63f-84710c7967bb": An unhandled exception was thrown by the application.
+Connection ID "18086456109425492015", Request ID "80000030-0001-fb00-b63f-84710c7967bb": An unhandled exception was thrown by the application.
+Connection ID "18014398519682531741", Request ID "8000019e-0002-fa00-b63f-84710c7967bb": An unhandled exception was thrown by the application.
+Info Processing request: /news/allnews
+Eror Processing request: /news/allnews
+Info Processing request: /lib/bootstrap/dist/css/bootstrap-grid.css/bootstrap-grid.min.css/bootstrap-grid.min.css.map
+Info Processing request: /lib/bootstrap/dist/css/bootstrap-reboot.css/bootstrap-reboot.min.css/bootstrap-reboot.min.css.map
+Info Processing request: /lib/bootstrap/dist/css/bootstrap.css/bootstrap.css.map
+Eror Processing request: /lib/bootstrap/dist/css/bootstrap.css/bootstrap.css.map
+An unhandled exception has occurred while executing the request.
+Connection ID "18158513716348322218", Request ID "800001ab-0004-fc00-b63f-84710c7967bb": An unhandled exception was thrown by the application.
+Unexpected exception in IISHttpContext.HandleRequest.
+Unexpected exception in IISHttpContext.HandleRequest.
+Unexpected exception in IISHttpContext.HandleRequest.
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: D:\it-academy\New folder (2)\GoodNewsAggregator\GoodNewsAggregator\GoodNewsAggregator
+Info Processing request: /
+Eror Processing request: /
+Info Processing request: /lib/bootstrap/dist/css/bootstrap.css/bootstrap.min.css/bootstrap.min.css.map
+Info Processing request: /lib/bootstrap/dist/css/bootstrap-grid.css/bootstrap-grid.css.map
+Info Processing request: /lib/bootstrap/dist/css/bootstrap.css/bootstrap.css.map
+Info Processing request: /lib/bootstrap/dist/css/bootstrap-grid.css/bootstrap-grid.min.css/bootstrap-grid.min.css.map
+Eror Processing request: /lib/bootstrap/dist/css/bootstrap-grid.css/bootstrap-grid.min.css/bootstrap-grid.min.css.map
+Info Processing request: /lib/bootstrap/dist/css/bootstrap-reboot.css/bootstrap-reboot.min.css/bootstrap-reboot.min.css.map
+Eror Processing request: /lib/bootstrap/dist/css/bootstrap-grid.css/bootstrap-grid.css.map
+Eror Processing request: /lib/bootstrap/dist/css/bootstrap-reboot.css/bootstrap-reboot.min.css/bootstrap-reboot.min.css.map
+An unhandled exception has occurred while executing the request.
+An unhandled exception has occurred while executing the request.
+Connection ID "17870283335901642765", Request ID "8000000e-0003-f800-b63f-84710c7967bb": An unhandled exception was thrown by the application.

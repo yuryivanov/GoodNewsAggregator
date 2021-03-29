@@ -64,7 +64,7 @@ namespace GoodNewsAggregator.Services.Implementation
         public async Task<IEnumerable<NewsDto>> FindNews()
         {            
             var news = await _unitOfWork.News.FindBy(n
-                        => n.RSSId.Equals(n.RSSId.GetValueOrDefault()))
+                        => n.Id.Equals(n.Id))
                     .ToListAsync();
 
 

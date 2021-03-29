@@ -19,6 +19,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation.Repositories
         protected Repository(GoodNewsAggregatorContext context)
         {
             Db = context;
+            Table = Db.Set<T>();
         }
         public async Task<T> GetEntityById(Guid id)
         {

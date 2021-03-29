@@ -1,5 +1,5 @@
 ﻿@using GoodNewsAggregator.Models.ViewModels.News;
-@*@model IEnumerable<NewsViewModel>*@
+@model IEnumerable<NewsViewModel>
 @{
     ViewData["Title"] = "All News";
 }
@@ -9,40 +9,40 @@
     <div class="container">
         < class="row align-items-start">
         @{
-            @*foreach (var item in Model)
+            foreach (var item in Model)
             {
                 <div class="col">
 
                     <div class="entity_title">
                         <h2>
                             <a href="D:\it-academy\GoodNewsAggregator\GoodNewsAggregator\GoodNewsAggregator\Views\News\SingleNews.cshtml">
-                                @Model.
+                                @item.Title
                             </a>
                         </h2>
                     </div>
 
                 </div>
-            }*@
+            }
         }
     </div>
     <div class="row align-items-center">
         @{
-            @*foreach (var item in Model)
+            foreach (var item in Model)
             {
                 <div class="col">
                     One of three columns
                 </div>
-            }*@
+            }
         }
     </div>
     <div class="row align-items-end">
         @{
-            @*foreach (var item in Model)
+            foreach (var item in Model)
             {
                 <div class="col">
                     One of three columns
                 </div>
-            }*@
+            }
         }
     </div>
     <!-- main content -->
