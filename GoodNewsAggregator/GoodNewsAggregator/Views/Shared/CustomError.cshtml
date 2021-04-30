@@ -1,0 +1,15 @@
+﻿@model CustomErrorViewModel
+    @{
+        ViewData["Title"] = "Ошибка";
+    }
+
+<div class="col-12 text-center">    
+    <h2 class="text-danger" style="color:black;">Извините, у нас возникла ошибка</h2>
+    <h3>Пожалуйста, перейдите на <a asp-action="AllNews">главную</a> страницу</h3>
+    <div>
+        <a href="/News/AllNews">
+            <img src="~/img/sadError.jpg"
+                 alt="GoodNewsAggregatorSadError">
+        </a>
+    </div><br/><br/><br />
+</div>

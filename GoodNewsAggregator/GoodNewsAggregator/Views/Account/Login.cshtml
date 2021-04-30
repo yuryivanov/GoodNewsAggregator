@@ -1,0 +1,74 @@
+﻿@model GoodNewsAggregator.Models.ViewModels.Account.RegisterViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Вход</title>
+    <link href="~/css/logging.css" rel="stylesheet" type="text/css" />
+    <link href="~/img/" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+    <link rel="icon" href="http://vladmaxi.net/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="http://vladmaxi.net/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+    <div id="wrapper">
+        <div class="user-icon"></div>
+        <div class="pass-icon"></div>
+
+        <form class="login-form" asp-action="Register" asp-controller="Account" asp-antiforgery="true" method="post">
+
+            <div class="header form-group">
+                <h1>Авторизация</h1>
+                <span>Введите ваши регистрационные данные для входа на сайт. </span>
+            </div>
+
+            <div class="content form-group" autocomplete="off">
+                <div>
+                    <label asp-for="Email">Введите Email</label>
+                    <input class="input username" type="text" asp-for="Email" onfocus="this.value=''" />
+                    <span asp-validation-for="Email"></span>
+                </div><br />
+                <div>
+                    <label asp-for="Password">Введите пароль</label>
+                    <input class="input password" type="password" asp-for="Password" onfocus="this.value=''" />
+                    <span asp-validation-for="Password"></span>
+                </div><br />               
+            </div>
+
+            <div class="footer form-group">
+                <input asp-action="Login" type="submit" name="submit" value="ВОЙТИ" class="button" />
+            </div>
+
+        </form>
+    </div>
+    <div class="gradient"></div>
+
+    @section Scripts
+{
+        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".username").focus(function () {
+                $(".user-icon").css("left", "-48px");
+            });
+            $(".username").blur(function () {
+                $(".user-icon").css("left", "0px");
+            });
+
+            $(".password").focus(function () {
+                $(".pass-icon").css("left", "-48px");
+            });
+            $(".password").blur(function () {
+                $(".pass-icon").css("left", "0px");
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+﻿@model GoodNewsAggregator.Models.ViewModels.News.CreateNewsViewModel
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<h4>RssSourse</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @using (Html.BeginForm("Create", "RssSourses", FormMethod.Post))
+        {
+            <div>
+                @Html.LabelFor(model => model.Address)
+                @Html.TextBoxFor(sourse => sourse.Address)
+            </div>
+            <input type="submit" />
+        }
+    </div>
+</div>
+
+<div>
+    <a asp-action="AllNews">Back to List</a>
+</div>

@@ -15,5 +15,6 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
         Task RemoveRangeNews(IEnumerable<NewsDto> news);
         Task<IEnumerable<NewsDto>> FindNews();
         Task AddRangeNews(IEnumerable<NewsDto> news);
+        Task<IEnumerable<NewsDto>> GetNewsInfoFromRssSourse(RSSDto rssSourse);
     }
 }

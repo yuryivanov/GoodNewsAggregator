@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Debug;
-using GoodNewsAggregator.MyLogger;
 using System.IO;
 using GoodNewsAggregator.DAL.Core;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -21,7 +20,8 @@ using GoodNewsAggregator.Services.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using GoodNewsAggregator.DAL.Repositories.Implementation.Repositories;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
-using GoodNewsAggregator.DAL.Core.Entities;
+using GoodNewsAggregator.Filters;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace GoodNewsAggregator
 {
@@ -41,20 +41,51 @@ namespace GoodNewsAggregator
 
             services.AddScoped<INewsRepository, NewsRepository>();
             services.AddScoped<IRSSRepository, RSSRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddScoped<INewsService, NewsService>();
+            services.AddScoped<IRSSService, RSSService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
 
+            services.AddScoped<IWebPageParser, OnlinerParser>();
+            services.AddScoped<IWebPageParser, TutByParser>();
+            services.AddScoped<IWebPageParser, S13Parser>();
 
-            services.AddControllersWithViews();
+            services.AddTransient<OnlinerParser>();
+            services.AddTransient<TutByParser>();
+            services.AddTransient<S13Parser>();
+
+            services.AddScoped<ChromeFilterAttribute>();
+            services.AddScoped<CustomExceptionFilterAttribute>();
+
+            //services.AddAutoMapper(typeof(Startup));
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+               .AddCookie(opt =>
+               {
+                   opt.LoginPath = new PathString("/Account/Login");
+                   opt.AccessDeniedPath = new PathString("/Account/Login");
+               });
+
             services.AddSession(options =>
             {
                 //options.Cookie.IsEssential = true;
                 //options.IdleTimeout = TimeSpan.FromSeconds(3600);
             });
+
+            services.AddControllersWithViews().AddMvcOptions(opt =>
+            {
+                opt.Filters.Add(new ChromeFilterAttribute());
+                opt.Filters.Add(typeof(CustomExceptionFilterAttribute));
+                //opt.Filters.Add(new CustomExceptionFilterAttribute());
+            });            
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory factory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -66,34 +97,6 @@ namespace GoodNewsAggregator
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            //Error Loggs:
-
-            //var loggerFactory = LoggerFactory.Create(builder =>
-            //{
-            //    builder.AddDebug();
-            //    builder.AddFilter("Default", LogLevel.Error).SetMinimumLevel(LogLevel.Error);
-            //});
-            //ILogger logger = loggerFactory.CreateLogger<Startup>();
-
-            //app.Use(async (context, next) =>
-            //{
-            //    logger.LogError($"Error path: {context.Request.Path}");
-            //    logger.LogCritical($"Critical Error path: {context.Request.Path}");
-            //    await next.Invoke();
-            //});
-
-            factory.AddFile(Path.Combine(Directory.GetCurrentDirectory(), "logger.txt"));
-            var logger = factory.CreateLogger("FileLogger");
-
-            app.Use(async (context, next) =>
-            {
-                logger.LogInformation($"Info Processing request: {context.Request.Path}");
-                logger.LogError($"Eror Processing request: {context.Request.Path}");
-                logger.LogTrace($"Trace Processing request: {context.Request.Path}");
-
-                await next.Invoke();
-            });
 
             //Session & Cookies:
             app.UseSession();
@@ -119,6 +122,8 @@ namespace GoodNewsAggregator
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

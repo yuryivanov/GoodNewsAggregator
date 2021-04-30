@@ -1,0 +1,27 @@
+﻿@using GoodNewsAggregator.TagHelpers
+@model GoodNewsAggregator.Models.ViewModels.News.NewsListWithPaginationInfo
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<p>
+    @*<a href="~/News/Create">Create New</a>
+        @Html.ActionLink("Create New","Create", "News")*@
+    <a asp-controller="News" asp-action="Aggregate">Aggregate</a>
+    @*<a asp-action="Create">Create New</a>*@
+</p>
+
+<div class="row">
+    @*@Html.CreateListNews(Model.News)*@
+    @foreach (var item in Model.News)
+    {
+        await Html.RenderPartialAsync("ShortNewsPreview", item);
+    }
+    @*<div class="btn-group">
+            @Html.CreatePagination(Model.PageInfo, i => Url.Action("Index", new {page = i, sourseId = Model.News.FirstOrDefault()?.RssSourseId}))
+        </div>
+        <pagination page-model="Model.PageInfo" page-action="Index"></pagination>*@
+</div>

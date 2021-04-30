@@ -14,7 +14,7 @@ namespace GoodNewsAggregator.Core.DataTransferObjects
         public string Text { get; set; }
         public double? GoodnessCoefficient { get; set; }
 
-        public Guid? RSS_Id { get; set; }
+        public Guid RSS_Id { get; set; }
         public string RSSAddress { get; set; }
     }
 }

@@ -1,71 +1,59 @@
-﻿@using GoodNewsAggregator.Models.ViewModels.News;
-@model IEnumerable<NewsViewModel>
+﻿@using GoodNewsAggregator.HtmlHelpers
+@using GoodNewsAggregator.Models.ViewModels.News;
+@model NewsListWithPaginationInfo
 @{
-    ViewData["Title"] = "All News";
+    ViewData["Title"] = "Все новости";
 }
 
 
 <section id="entity_section" class="entity_section">
+
+    <div class="row">
+        <div class="text-center">
+            <h1>ВСЕ НОВОСТИ</h1>
+        </div>
+    </div>
+
     <div class="container">
-        < class="row align-items-start">
-        @{
-            foreach (var item in Model)
+        <div class="row align-content-around news">
+            @foreach (var item in Model.News)
             {
-                <div class="col">
+                <div class="col-4 card" style="width: 26rem;">
+                    <div class="card-body">
+                        <div class="entity_title">
+                            <h4>@Html.Raw(item.Title)</h4>
+                        </div>
+                        <!-- entity_title -->
 
-                    <div class="entity_title">
-                        <h2>
-                            <a href="D:\it-academy\GoodNewsAggregator\GoodNewsAggregator\GoodNewsAggregator\Views\News\SingleNews.cshtml">
-                                @item.Title
-                            </a>
-                        </h2>
+                        <div class="entity_meta">
+                            <p>Дата публикации: @item.PublicationDate.Value.ToString("dd.MM.yyyy HH:mm")</p>
+                            <p>Коэффициент: @item.GoodnessCoefficient</p>
+                        </div>
+                        <!-- entity_meta -->
+
+                        <div class="entity_content">
+                            <p class="imgChanges">
+                                @Html.Raw(item.Description)
+                            </p>
+                        </div>
+                        <!-- entity_content -->
+
+                        <div>
+                            <a asp-action="SingleNews" asp-route-id="@item.Id">Читать</a>
+                        </div>
+                        <!-- details -->
                     </div>
-
                 </div>
+                <!-- main content -->
             }
-        }
+        </div>
+        <br /><br />
+        <div class="btn-group">
+            @Html.CreatePagination(Model.PageInfo, i => Url.Action("AllNews", new { page = i }))
+        </div>
+        <pagination page-model="Model.PageInfo" page-action="Index"></pagination>
     </div>
-    <div class="row align-items-center">
-        @{
-            foreach (var item in Model)
-            {
-                <div class="col">
-                    One of three columns
-                </div>
-            }
-        }
-    </div>
-    <div class="row align-items-end">
-        @{
-            foreach (var item in Model)
-            {
-                <div class="col">
-                    One of three columns
-                </div>
-            }
-        }
-    </div>
-    <!-- main content -->
-
-
-    <nav aria-label="Page navigation" class="pagination_section">
-        <ul class="pagination">
-            <li>
-                <a href="#" aria-label="Previous"> <span aria-hidden="true">&laquo;</span> </a>
-            </li>
-            <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li>
-                <a href="#" aria-label="Next" class="active"> <span aria-hidden="true">&raquo;</span> </a>
-            </li>
-        </ul>
-    </nav>
-    <!-- navigation -->
-    </div>
+    <br /><br />
     <!-- container -->
-
 </section>
 <!-- entity_section -->

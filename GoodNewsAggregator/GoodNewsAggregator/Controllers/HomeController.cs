@@ -11,11 +11,8 @@ namespace GoodNewsAggregator.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController()
         {
-            _logger = logger;
         }
 
         [HttpGet]
@@ -24,6 +21,7 @@ namespace GoodNewsAggregator.Controllers
             
             return View();
         }
+
         [HttpPost]
         public IActionResult Login(string login, string password)
         {

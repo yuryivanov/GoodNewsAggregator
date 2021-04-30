@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace GoodNewsAggregator.Models
+namespace GoodNewsAggregator.Models.ViewModels.News
 {
-    public class NewsModel
+    public class CreateNewsViewModel
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -15,6 +14,7 @@ namespace GoodNewsAggregator.Models
         public double? GoodnessCoefficient { get; set; }
 
         public Guid? RSS_Id { get; set; }
-        public RSSModel RSSModel { get; set; }
+
+        public SelectList Sources { get; set; }
     }
 }

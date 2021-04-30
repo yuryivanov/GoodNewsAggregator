@@ -1,91 +1,40 @@
-﻿@model GoodNewsAggregator.Models.ViewModels.News.NewsViewModel
+﻿@using GoodNewsAggregator.Models.ViewModels.News
+@model NewsWithRSSAddressViewModel
 @{
-    ViewData["Title"] = "Single News";
+    ViewData["Title"] = "Новость";
 }
 
 
 <section id="entity_section" class="entity_section">
     <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="entity_wrapper">
+        <div>
+            <div class="entity_wrapper">
+                <div class="entity_meta">
+                    <h4>Дата публикации: @Model.PublicationDate.Value.ToString("dd.MM.yyyy HH:mm");</h4>
+                    <h4>Коэффициент: @Model.GoodnessCoefficient</h4>
+                    <h4>Источник: @Model.RSSAddress </h4>
+                </div><br />
+                <!-- entity_meta -->
+
+                @if (Model.RSS_Id.Equals(new Guid("972036b6-175f-4251-b2d9-296a77b65169")) && !(Model.Text.Contains("</h1>")))
+                {
                     <div class="entity_title">
-                        <h1><a href="#">Chevrolet car-saving technology delivers 'superhuman' sight when you need it most</a></h1>
+                        <h1>@Html.Raw(Model.Title)</h1>
                     </div>
                     <!-- entity_title -->
+                }
 
-                    <div class="entity_meta">
-                        <a href="#" target="_self">10Aug- 2015</a>, by: <a href="#" target="_self">Eric joan</a>
-                    </div>
-                    <!-- entity_meta -->
-
-                    <div class="entity_rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star-half-full"></i>
-                    </div>
-                    <!-- entity_rating -->
-
-                    <div class="entity_social">
-                        <a href="#" class="icons-sm sh-ic">
-                            <i class="fa fa-share-alt"></i>
-                            <b>424</b> <span class="share_ic">Shares</span>
-                        </a>
-                        <a href="#" class="icons-sm fb-ic"><i class="fa fa-facebook"></i></a>
-                        <!--Twitter-->
-                        <a href="#" class="icons-sm tw-ic"><i class="fa fa-twitter"></i></a>
-                        <!--Google +-->
-                        <a href="#" class="icons-sm inst-ic"><i class="fa fa-google-plus"> </i></a>
-                        <!--Linkedin-->
-                        <a href="#" class="icons-sm tmb-ic"><i class="fa fa-ge"> </i></a>
-                        <!--Pinterest-->
-                        <a href="#" class="icons-sm rss-ic"><i class="fa fa-rss"> </i></a>
-                    </div>
-                    <!-- entity_social -->
-
-                    <div class="entity_thumb">
-                        <img class="img-responsive" src="assets/img/category_img_top.jpg" alt="feature-top">
-                    </div>
-                    <!-- entity_thumb -->
-
-                    <div class="entity_content">
-                        <p>
-                         @Model.
-                        </p>
-                    </div>
-                    <!-- entity_content -->
-
-                    <div class="entity_footer">
-                        <div class="entity_tag">
-                            <span class="blank"><a href="#">Tech</a></span>
-                            <span class="blank"><a href="#">Transport</a></span>
-                            <span class="blank"><a href="#">Mobile</a></span>
-                            <span class="blank"><a href="#">Gadgets</a></span>
-                        </div>
-                        <!-- entity_tag -->
-
-                        <div class="entity_social">
-                            <span><i class="fa fa-share-alt"></i>424 <a href="#">Shares</a> </span>
-                            <span><i class="fa fa-comments-o"></i>4 <a href="#">Comments</a> </span>
-                        </div>
-                        <!-- entity_social -->
-
-                    </div>
-                    <!-- entity_footer -->
-
+                <div class="entity_content">
+                    <p>
+                        @Html.Raw(Model.Text)
+                    </p>
                 </div>
-                <!-- entity_wrapper -->
+                <!-- entity_content -->
 
-                <div class="widget_advertisement">
-                    <img class="img-responsive" src="assets/img/category_advertisement.jpg" alt="feature-top">
-                </div>
-                <!--Advertisement-->
 
                 <div class="readers_comment">
                     <div class="entity_inner__title header_purple">
-                        <h2>Комментарии читателей</h2>
+                        <h4>Комментарии читателей</h4>
                     </div>
                     <!-- entity_title -->
 
@@ -97,7 +46,7 @@
                             </a>
                         </div>
                         <div class="media-body">
-                            <h2 class="media-heading"><a href="#">Юрий Иванов</a></h2>
+                            <h4 class="media-heading"><a href="#">Юрий Иванов</a></h4>
                             Комментарий1
 
                             <div class="entity_vote">
@@ -113,7 +62,7 @@
                                     </a>
                                 </div>
                                 <div class="media-body">
-                                    <h2 class="media-heading"><a href="#">Администратор</a></h2>
+                                    <h4 class="media-heading"><a href="#">Администратор</a></h4>
                                     Ответ1
 
                                     <div class="entity_vote">
@@ -136,7 +85,7 @@
                             </a>
                         </div>
                         <div class="media-body">
-                            <h2 class="media-heading"><a href="#">Виталий Иванов</a></h2>
+                            <h4 class="media-heading"><a href="#">Виталий Иванов</a></h4>
                             Комментарий2
 
                             <div class="entity_vote">
@@ -150,14 +99,9 @@
                 </div>
                 <!--Readers Comment-->
 
-                <div class="widget_advertisement">
-                    <img class="img-responsive" src="assets/img/category_advertisement.jpg" alt="feature-top">
-                </div>
-                <!--Advertisement-->
-
                 <div class="entity_comments">
                     <div class="entity_inner__title header_black">
-                        <h2>Добавить комментарий</h2>
+                        <h4>Добавить комментарий</h4>
                     </div>
                     <!--Entity Title -->
 
@@ -176,7 +120,7 @@
                             <button type="submit" class="btn btn-submit red">Отправить</button>
                         </form>
                     </div>
-                    <!--Entity Comments From -->
+                    <!--Entity Comments Form -->
 
                 </div>
                 <!--Entity Comments -->

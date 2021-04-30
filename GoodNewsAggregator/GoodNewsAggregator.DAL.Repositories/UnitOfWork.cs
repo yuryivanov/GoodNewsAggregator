@@ -12,13 +12,19 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
         private readonly GoodNewsAggregatorContext _db;
         private readonly INewsRepository _newsRepository;
         private readonly IRSSRepository _rSSRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
                
         public UnitOfWork(GoodNewsAggregatorContext context,
             INewsRepository newsRepository,
-            IRSSRepository rSSRepository)
+            IRSSRepository rSSRepository,
+            IUserRepository userRepository,
+            IRoleRepository roleRepository)
         {
             _newsRepository = newsRepository;
             _rSSRepository = rSSRepository;
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
             _db = context;
         }
 
@@ -30,13 +36,11 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
             }
         }
 
-        IRSSRepository IUnitOfWork.RSS
-        {
-            get
-            {
-                return _rSSRepository;
-            }
-        }
+        IRSSRepository IUnitOfWork.RSS => _rSSRepository;
+
+        IUserRepository IUnitOfWork.Users => _userRepository;
+
+        IRoleRepository IUnitOfWork.Roles => _roleRepository;
 
         public async Task<int> SaveChangesAsync()
         {

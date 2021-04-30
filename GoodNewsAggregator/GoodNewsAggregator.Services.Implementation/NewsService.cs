@@ -9,6 +9,8 @@ using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
+using System.Xml;
+using System.ServiceModel.Syndication;
 
 namespace GoodNewsAggregator.Services.Implementation
 {
@@ -62,7 +64,7 @@ namespace GoodNewsAggregator.Services.Implementation
         }
 
         public async Task<IEnumerable<NewsDto>> FindNews()
-        {            
+        {
             var news = await _unitOfWork.News.FindBy(n
                         => n.Id.Equals(n.Id))
                     .ToListAsync();
@@ -171,6 +173,46 @@ namespace GoodNewsAggregator.Services.Implementation
             }
 
             return newsWithRSSAddress;
+        }
+
+        public async Task<IEnumerable<NewsDto>> GetNewsInfoFromRssSourse(RSSDto rssSourse)
+        {
+            var news = new List<NewsDto>();
+            using (var reader = XmlReader.Create(rssSourse.Address))
+            {
+                var feed = SyndicationFeed.Load(reader);
+                reader.Close();
+                if (feed.Items.Any())
+                {
+                    var currentNewsUrls = await _unitOfWork.News
+                        .FindBy(n
+                        => n.Id.Equals(n.Id))//rssSourseId must be not nullable
+                        .Select(n => n.Address)
+                        .ToListAsync();
+
+                    foreach (var syndicationItem in feed.Items)
+                    {
+                        //var syndicationItems = feed.Items;
+                        //Parallel.ForEach(syndicationItems, syndicationItem =>
+                        //{
+                        if (!currentNewsUrls.Any(url => url.Equals(syndicationItem.Id)))
+                        {
+                            var newsDto = new NewsDto()
+                            {
+                                Id = Guid.NewGuid(),
+                                RSS_Id = rssSourse.Id,
+                                Address = syndicationItem.Id,
+                                Title = syndicationItem.Title.Text,
+                                Description = syndicationItem.Summary.Text.Replace("Читать далее…", ""), //clean from html(?)
+                                PublicationDate = syndicationItem.PublishDate.DateTime
+                            };
+                            news.Add(newsDto);
+                        }
+                        //});
+                    }
+                }
+            }
+            return news;
         }
 
         public async Task RemoveRangeNews(IEnumerable<NewsDto> news)

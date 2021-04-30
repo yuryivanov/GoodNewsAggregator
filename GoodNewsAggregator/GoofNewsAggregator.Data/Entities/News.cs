@@ -15,7 +15,7 @@ namespace GoodNewsAggregator.DAL.Core.Entities
         public string Text { get; set; }
         public double? GoodnessCoefficient { get; set; }
 
-        public Guid? RSSId { get; set; } //FK
+        public Guid RSSId { get; set; } //FK
         public virtual RSS RSS { get; set; }
 
         public virtual ICollection<Comment> CommentCollection { get; set; }

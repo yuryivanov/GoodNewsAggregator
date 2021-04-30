@@ -64,7 +64,7 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                     b.Property<DateTime?>("PublicationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("RSSId")
+                    b.Property<Guid>("RSSId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
@@ -114,7 +114,10 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Login")
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
@@ -149,7 +152,9 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 {
                     b.HasOne("GoodNewsAggregator.DAL.Core.Entities.RSS", "RSS")
                         .WithMany("NewsCollection")
-                        .HasForeignKey("RSSId");
+                        .HasForeignKey("RSSId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.User", b =>

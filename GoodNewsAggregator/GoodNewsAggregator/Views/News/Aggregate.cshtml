@@ -1,0 +1,22 @@
+﻿@model GoodNewsAggregator.Models.ViewModels.News.CreateNewsViewModel
+
+@{
+    ViewData["Title"] = "Aggregate";
+}
+
+<h1>Aggregate News</h1>
+
+<h3>Are you sure you want to aggregate news? It can take a time</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Aggregate">
+            <input type="submit" value="Submit" class="btn btn-danger" /> |
+            <a asp-action="AllNews">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
