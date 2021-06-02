@@ -6,7 +6,7 @@
     color: #000;
     position: relative;
     min-width: 975px;
-  /*  background: #e6e6e6;*/
+    /*  background: #e6e6e6;*/
     -webkit-font-smoothing: antialiased;
 }
 
@@ -21,6 +21,12 @@
 }
 
 h1 {
+    /*background: #ffe8d5;*/
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    /*border-radius: 7px;*/
+}
+
+.main-header {
     background: #ffe8d5;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     border-radius: 7px;
@@ -28,6 +34,7 @@ h1 {
 
 a {
     color: #0a58ca;
+    text-decoration: none;
 }
 
     a:hover {
@@ -41,3 +48,41 @@ a {
 
 .time:lang(ru) {
 }
+
+#paginationEllipsis {
+    padding-top: 10px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.content {
+    min-height: calc(100vh - 80px);
+}
+
+.news-text {
+    min-height: calc(100vh - 80px);
+}
+
+.b-article {
+    min-height: calc(100vh - 80px);
+}
+
+.news-one-data {
+    min-height: calc(100vh - 80px);
+}
+
+.stk-post stk-layout_4col_4203 stk-theme_9740 wp-exclude-emoji {
+    min-height: calc(100vh - 80px);
+}
+
+#article_body {
+    min-height: calc(100vh - 80px);
+}
+
+.body-content {
+    min-height: calc(100vh - 80px);
+}
+

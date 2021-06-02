@@ -21,6 +21,7 @@ using GoodNewsAggregator;
 using GoodNewsAggregator.Filters;
 using GoodNewsAggregator.Services.Implementation;
 using GoodNewsAggregator.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace GoodNewsAggregator.Controllers
 {
@@ -29,24 +30,58 @@ namespace GoodNewsAggregator.Controllers
         private readonly INewsService _newsService;
         private readonly IRSSService _rssService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICommentService _commentService;
         private readonly OnlinerParser _onlinerParser;
         private readonly TutByParser _tutByParser;
         private readonly S13Parser _s13Parser;
+        private readonly FourpdaParser _fourpdaParser;
 
-        public NewsController(INewsService newsService, IRSSService rssService, OnlinerParser onlinerParser, TutByParser tutByParser, S13Parser s13Parser, IUnitOfWork unitOfWork)
+        public NewsController(INewsService newsService,
+            IRSSService rssService,
+            OnlinerParser onlinerParser,
+            TutByParser tutByParser,
+            S13Parser s13Parser,
+            FourpdaParser fourpdaParser,
+            IUnitOfWork unitOfWork,
+            ICommentService commentService)
         {
             _newsService = newsService;
             _rssService = rssService;
             _onlinerParser = onlinerParser;
             _tutByParser = tutByParser;
             _s13Parser = s13Parser;
+            _fourpdaParser = fourpdaParser;
             _unitOfWork = unitOfWork;
+            _commentService = commentService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Aggregate()
         {
-            return View();
+            if (HttpContext.User.Identity.Name != null)
+            {
+                var userEmail = HttpContext.User.Identity.Name;
+                var user = await _unitOfWork.Users.FindBy(user => user.Email.Equals(userEmail)).FirstOrDefaultAsync();
+                var userRoleName = (await _unitOfWork.Roles.FindBy(role => role.Id.Equals(user.RoleId)).FirstOrDefaultAsync()).Name;
+
+                if (userRoleName == "Admin")
+                {
+                    return View(new AggregateNewsViewModel()
+                    {
+                        Email = userEmail,
+                        Name = user.FullName,
+                        RoleName = userRoleName
+                    });
+                }
+                else
+                {
+                    return StatusCode(403);
+                }
+            }
+            else
+            {
+                return StatusCode(403);
+            }
         }
 
         //POST: News/Aggregate
@@ -56,46 +91,68 @@ namespace GoodNewsAggregator.Controllers
         {
             try
             {
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-                var rssSourses = await _rssService
-                    .FindRss();
-
-                List<RSSDto> listOfRssDtos = rssSourses.ToList();
-
-                var newsInfos = new List<NewsDto>(); // without any duplicate
-
-                List<NewsDto> allNews = new List<NewsDto>();
-
-                foreach (var rss in listOfRssDtos)
+                if (HttpContext.User.Identity.Name != null)
                 {
-                    allNews.AddRange(_newsService.GetNewsInfoFromRssSourse(rss).Result);
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
+
+                    var userEmail = HttpContext.User.Identity.Name;
+                    var user = await _unitOfWork.Users.FindBy(user => user.Email.Equals(userEmail)).FirstOrDefaultAsync();
+                    var userRoleName = (await _unitOfWork.Roles.FindBy(role => role.Id.Equals(user.RoleId)).FirstOrDefaultAsync()).Name;
+
+                    if (userRoleName == "Admin")
+                    {
+                        var rssSourses = await _rssService.FindRss();
+
+                        List<RSSDto> listOfRssDtos = rssSourses.ToList();
+
+                        var newsInfos = new List<NewsDto>(); // without any duplicate
+
+                        List<NewsDto> allNews = new List<NewsDto>();
+
+                        foreach (var rss in listOfRssDtos)
+                        {
+                            allNews.AddRange(_newsService.GetNewsInfoFromRssSourse(rss).Result);
+                        }
+
+                        Parallel.ForEach(allNews, news =>
+                        {
+                            if (news.RSS_Id.Equals(new Guid("f68ffbd2-3ae5-4e80-be43-6021233c6ec9")))
+                            {
+                                var newsBody = _fourpdaParser.Parse(news.Address);
+                                news.Text = newsBody.Result;
+                            }
+                            else if (news.RSS_Id.Equals(new Guid("b637e8d9-dc89-4feb-951c-23d3baa7c48d")))
+                            {
+                                var newsBody = _s13Parser.Parse(news.Address);
+                                news.Text = newsBody.Result;
+                            }
+                            else if (news.RSS_Id.Equals(new Guid("972036b6-175f-4251-b2d9-296a77b65169")))
+                            {
+                                var newsBody = _onlinerParser.Parse(news.Address);
+                                news.Text = newsBody.Result;
+                            }
+                        });
+                        newsInfos.AddRange(allNews);
+
+                        await _newsService.AddRangeNews(newsInfos);
+
+                        View(new AggregateNewsViewModel()
+                        {
+                            Email = userEmail,
+                            Name = user.FullName,
+                            RoleName = userRoleName
+                        });
+                    }
+                    stopwatch.Stop();
+                    Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}");
+
+                    View(new AggregateNewsViewModel());
                 }
-
-                Parallel.ForEach(allNews, news =>
+                else
                 {
-                    if (news.RSS_Id.Equals(new Guid("f68ffbd2-3ae5-4e80-be43-6021233c6ec9")))
-                    {
-                            var newsBody = _tutByParser.Parse(news.Address);
-                            news.Text = newsBody.Result;
-                    }
-                    else if (news.RSS_Id.Equals(new Guid("b637e8d9-dc89-4feb-951c-23d3baa7c48d")))
-                    {
-                            var newsBody = _s13Parser.Parse(news.Address);
-                            news.Text = newsBody.Result;
-                    }
-                    else if (news.RSS_Id.Equals(new Guid("972036b6-175f-4251-b2d9-296a77b65169")))
-                    {
-                            var newsBody = _onlinerParser.Parse(news.Address);
-                            news.Text = newsBody.Result;
-                    }                   
-                });
-                newsInfos.AddRange(allNews);                
-
-                await _newsService.AddRangeNews(newsInfos);
-                
-                stopwatch.Stop();
-                Log.Information($"Aggregation was executed in {stopwatch.ElapsedMilliseconds}");
+                    return Forbid();
+                }
             }
             catch (Exception e)
             {
@@ -104,46 +161,11 @@ namespace GoodNewsAggregator.Controllers
             return RedirectToAction(nameof(AllNews));
         }
 
-        //GET: News/Create
-        public async Task<IActionResult> Create()
-        {
-
-            var model = new CreateNewsViewModel()
-            {
-                Sources = new SelectList(await _rssService.FindRss(),
-                    "Id", //field of element with value
-                    "Address") //field of element with text
-            };
-            return View(model);
-        }
-
-        //// GET: News/AllNews
-        //[HttpGet]
-        //public async Task<IActionResult> AllNews()
-        //{
-        //    var newsDtos = await _newsService.FindNews();
-
-        //    var newsViewModels = newsDtos.Select(n => new NewsViewModel()
-        //    {
-        //        Id = n.Id,
-        //        Address = n.Address,
-        //        Description = n.Description,
-        //        GoodnessCoefficient = n.GoodnessCoefficient,
-        //        PublicationDate = n.PublicationDate,
-        //        RSS_Id = n.RSS_Id,
-        //        Text = n.Text,
-        //        Title = n.Title
-        //    }).ToList();
-
-        //    return View(newsViewModels);
-        //}
-
-        // GET: News/AllNews
         [HttpGet]
         public async Task<IActionResult> AllNews(int page = 1)
         {
             try
-            {              
+            {
                 var news = await _newsService.FindNews();
 
                 var pageSize = 12;
@@ -157,6 +179,23 @@ namespace GoodNewsAggregator.Controllers
                     TotalItems = news.Count()
                 };
 
+                var r = HttpContext.Request.Cookies.ToList();
+
+                if (HttpContext.User.Identity.Name != null)
+                {
+                    var userEmail = HttpContext.User.Identity.Name;
+                    var user = await _unitOfWork.Users.FindBy(user => user.Email.Equals(userEmail)).FirstOrDefaultAsync();
+                    var userRoleName = (await _unitOfWork.Roles.FindBy(role => role.Id.Equals(user.RoleId)).FirstOrDefaultAsync()).Name;
+
+                    return View(new NewsListWithPaginationInfo()
+                    {
+                        News = newsPerPages,
+                        PageInfo = pageInfo,
+                        Email = user.Email,
+                        RoleName = userRoleName,
+                        Name = user.FullName
+                    });
+                }
                 return View(new NewsListWithPaginationInfo()
                 {
                     News = newsPerPages,
@@ -169,7 +208,6 @@ namespace GoodNewsAggregator.Controllers
                 throw;
             }
         }
-
 
         // GET: News/SingleNews
         [HttpGet]
@@ -187,7 +225,9 @@ namespace GoodNewsAggregator.Controllers
 
                     var rSSDto = await _rssService.FindRssById(newsDto.RSS_Id);
 
-                    var newsWithRSSAddressViewModel = new NewsWithRSSAddressViewModel()
+                    var comments = await _commentService.FindCommentsByNewsId(newsDto.Id);
+
+                    var newsWithCommentsAndRssAddressViewModel = new NewsWithCommentsAndRssAddressViewModel()
                     {
                         Id = newsDto.Id,
                         Title = newsDto.Title,
@@ -198,49 +238,13 @@ namespace GoodNewsAggregator.Controllers
                         GoodnessCoefficient = newsDto.GoodnessCoefficient,
 
                         RSS_Id = rSSDto.Id,
-                        RSSAddress = rSSDto.Address
+                        RSSAddress = rSSDto.Address,
+
+                        Comments = comments
                     };
 
-                    return View(newsWithRSSAddressViewModel);
+                    return View(newsWithCommentsAndRssAddressViewModel);
                 }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e, $"Unhandled exception was thrown by app");
-                throw;
-            }
-        }
-
-        // GET: News/Edit
-        [HttpGet]
-        public async Task<IActionResult> Edit(Guid id)
-        {
-            try
-            {
-                if (id == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    var model = await _newsService.GetNewsById(id);
-                    return View(model);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e, $"Unhandled exception was thrown by app");
-                throw;
-            }
-        }
-
-        // POST: News/Edit
-        [HttpPatch]
-        public IActionResult Edit()
-        {
-            try
-            {
-                return RedirectToAction(nameof(AllNews));
             }
             catch (Exception e)
             {
@@ -267,6 +271,6 @@ namespace GoodNewsAggregator.Controllers
         //public IActionResult Privacy1(int hiddenId)
         //{
         //    return View("Privacy");
-        //}
+        //}        
     }
 }

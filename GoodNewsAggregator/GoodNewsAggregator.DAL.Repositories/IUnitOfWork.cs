@@ -12,6 +12,7 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation
         IRSSRepository RSS { get; }
         IUserRepository Users { get; }
         IRoleRepository Roles { get; }
+        ICommentRepository Comments { get; }
         Task<int> SaveChangesAsync();
     }
 }

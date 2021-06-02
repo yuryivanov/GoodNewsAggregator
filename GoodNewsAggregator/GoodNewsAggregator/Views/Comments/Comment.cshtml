@@ -1,0 +1,12 @@
+﻿@model GoodNewsAggregator.Core.DataTransferObjects.CommentDto
+
+@{ 
+    Layout = null;
+}
+
+<div class="card col-sm-12">
+    <div class="card-body">
+        <p class="card-text">@Model.Text</p>
+        <p>@Model.FullName @Model.PublicationDate.ToString("dd.MM.yyyy HH:mm")</p>
+    </div>
+</div>

@@ -15,6 +15,6 @@ namespace GoodNewsAggregator.Models.ViewModels.News
 
         public Guid? RSS_Id { get; set; }
 
-        public SelectList Sources { get; set; }
+        public SelectList Sources { get; set; }       
     }
 }

@@ -94,18 +94,27 @@ namespace GoodNewsAggregator.Services.Implementation
             try
             {
                 var user = await _unitOfWork.Users.FindBy(user => user.Email.Equals(email)).FirstOrDefaultAsync();
-                return new UserDto
+
+                if (user != null)
                 {
-                    Id = user.Id,
-                    Email = user.Email,
-                    RoleId = user.RoleId,
-                    PasswordHash = user.PasswordHash,
-                    FullName = user.FullName
-                };
+                    return new UserDto
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        RoleId = user.RoleId,
+                        PasswordHash = user.PasswordHash,
+                        FullName = user.FullName
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+               
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Log.Error(e, "GetUserByEmail wasn't successfull");
                 throw;
             }
         }

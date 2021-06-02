@@ -9,14 +9,14 @@ namespace GoodNewsAggregator.Models.ViewModels.Account
 {
     public class LoginViewModel
     {
-        [EmailAddress(ErrorMessage = "Некорректный Email")]
-        [Required(ErrorMessage = "Введите Email")]
-        [DataType(DataType.EmailAddress)] // __@{}.{}
+        [Display(Name="Введите Email")] 
+        //It's better than using <label>, cause replacing name here causes replacing name for all such fields
+        [Required(ErrorMessage = "Введите Email")]      
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Введите пароль")]
-        [DataType(DataType.Password)] //min 8 symbols
-                                      //at leaset 1 lowercase letter, 1 uppercase, 1 digit, 1 specSymbol        
         public string Password { get; set; }
+
+        public string ReturnUrl { get; set; }
     }
 }

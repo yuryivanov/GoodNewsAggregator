@@ -10,5 +10,9 @@ namespace GoodNewsAggregator.Models.ViewModels.News
     {
         public IEnumerable<NewsDto> News { get; set; }
         public PageInfo PageInfo { get; set; }
+
+        public string Email { get; set; }
+        public string Name { get; set; }
+        public string RoleName { get; set; } = "Гость";
     }
 }

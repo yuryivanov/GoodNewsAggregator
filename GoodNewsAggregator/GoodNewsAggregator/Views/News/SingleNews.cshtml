@@ -1,5 +1,5 @@
 ﻿@using GoodNewsAggregator.Models.ViewModels.News
-@model NewsWithRSSAddressViewModel
+@model NewsWithCommentsAndRssAddressViewModel
 @{
     ViewData["Title"] = "Новость";
 }
@@ -16,7 +16,11 @@
                 </div><br />
                 <!-- entity_meta -->
 
-                @if (Model.RSS_Id.Equals(new Guid("972036b6-175f-4251-b2d9-296a77b65169")) && !(Model.Text.Contains("</h1>")))
+                @if (
+                  (Model.RSS_Id.Equals(new Guid("972036b6-175f-4251-b2d9-296a77b65169")) && !(Model.Text.Contains("</h1>")))
+                  ||
+                  (Model.RSS_Id.Equals(new Guid("f68ffbd2-3ae5-4e80-be43-6021233c6ec9")) && !(Model.Text.Contains("</h1>")))
+                  )
                 {
                     <div class="entity_title">
                         <h1>@Html.Raw(Model.Title)</h1>
@@ -31,100 +35,24 @@
                 </div>
                 <!-- entity_content -->
 
-
-                <div class="readers_comment">
-                    <div class="entity_inner__title header_purple">
-                        <h4>Комментарии читателей</h4>
-                    </div>
-                    <!-- entity_title -->
-
-                    <div class="media">
-                        <div class="media-left">
-                            <a href="#">
-                                <img alt="64x64" class="media-object" data-src="assets/img/reader_img1.jpg"
-                                     src="assets/img/reader_img1.jpg" data-holder-rendered="true">
-                            </a>
+                <div class="row ">
+                    <button id="comments-display-switcher" class="btn btn-primary col-sm-12" onclick="toggleComments('@Model.Id')">Display comments</button>
+                    @*<div class="container">*@
+                        <div id="comments-container" class="row">
+                            @*@foreach (var comment in Model.Comments)
+                    {
+                        @await Html.PartialAsync("Comments", comment)
+                    }*@
                         </div>
-                        <div class="media-body">
-                            <h4 class="media-heading"><a href="#">Юрий Иванов</a></h4>
-                            Комментарий1
-
-                            <div class="entity_vote">
-                                <a href="#"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a>
-                                <a href="#"><span class="reply_ic">Ответ</span></a>
-                            </div>
-                            <div class="media">
-                                <div class="media-left">
-                                    <a href="#">
-                                        <img alt="64x64" class="media-object" data-src="assets/img/reader_img2.jpg"
-                                             src="assets/img/reader_img2.jpg" data-holder-rendered="true">
-                                    </a>
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="media-heading"><a href="#">Администратор</a></h4>
-                                    Ответ1
-
-                                    <div class="entity_vote">
-                                        <a href="#"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a>
-                                        <a href="#"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a>
-                                        <a href="#"><span class="reply_ic">Ответ</span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- media end -->
-
-                    <div class="media">
-                        <div class="media-left">
-                            <a href="#">
-                                <img alt="64x64" class="media-object" data-src="assets/img/reader_img3.jpg"
-                                     src="assets/img/reader_img3.jpg" data-holder-rendered="true">
-                            </a>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="media-heading"><a href="#">Виталий Иванов</a></h4>
-                            Комментарий2
-
-                            <div class="entity_vote">
-                                <a href="#"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></a>
-                                <a href="#"><span class="reply_ic">Ответ </span></a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- media end -->
-                </div>
-                <!--Readers Comment-->
-
-                <div class="entity_comments">
-                    <div class="entity_inner__title header_black">
-                        <h4>Добавить комментарий</h4>
-                    </div>
-                    <!--Entity Title -->
-
-                    <div class="entity_comment_from">
-                        <form>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="inputName" placeholder="Имя">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="inputEmail" placeholder="Email адрес">
-                            </div>
-                            <div class="form-group comment">
-                                <textarea class="form-control" id="inputComment" placeholder="Комментарий"></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-submit red">Отправить</button>
-                        </form>
-                    </div>
-                    <!--Entity Comments Form -->
-
-                </div>
-                <!--Entity Comments -->
+                    @*</div>*@
+                </div>               
             </div>
         </div>
     </div>
 </section>
+
+@section Scripts
+{
+    <script src="~/js/comments.js"></script>
+    @*<script src="~/js/jquerySamples.js"></script>*@
+}

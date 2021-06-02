@@ -5,7 +5,7 @@ using GoodNewsAggregator.Core.Services.Interfaces;
 
 namespace GoodNewsAggregator.Services.Implementation
 {
-    public class OnlinerParser : IWebPageParser
+    public class FourpdaParser : IWebPageParser
     {
         public async Task<string> Parse(string url)
         {
@@ -15,17 +15,17 @@ namespace GoodNewsAggregator.Services.Implementation
 
             var htmlDocResult = htmlDoc.Result;
 
-            var node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='news-text']");
+            var node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='article']");
 
             if (node == null)
             {
-                node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@id='article_body']");
+                node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='content-box']");
             }
 
             if (node != null)
             {
-                node.InnerHtml = node.InnerHtml.Replace("<div class=\"news-incut news-incut_extended news-incut_position_right news-incut_shift_top news-helpers_hide_tablet\">",
-                    "<div class=\"news-incut news-incut_extended news-incut_position_right news-incut_shift_top news-helpers_hide_tablet\" style=\"display: none;\">");
+                node.InnerHtml = node.InnerHtml.Replace("<div class=\"article-meta\">",
+                    "<div class=\"article-meta\" style=\"display: none;\">");
                 node.InnerHtml = node.InnerHtml.Replace("<ul", "<text");
                 node.InnerHtml = node.InnerHtml.Replace("</ul", "</text");
 

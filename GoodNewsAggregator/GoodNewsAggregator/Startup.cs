@@ -22,6 +22,8 @@ using GoodNewsAggregator.DAL.Repositories.Implementation.Repositories;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using AutoMapper;
+using NewsAggregators.Services.Implementation.Mapping;
 
 namespace GoodNewsAggregator
 {
@@ -43,6 +45,7 @@ namespace GoodNewsAggregator
             services.AddScoped<IRSSRepository, RSSRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -50,26 +53,39 @@ namespace GoodNewsAggregator
             services.AddScoped<IRSSService, RSSService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             services.AddScoped<IWebPageParser, OnlinerParser>();
             services.AddScoped<IWebPageParser, TutByParser>();
             services.AddScoped<IWebPageParser, S13Parser>();
+            services.AddScoped<IWebPageParser, FourpdaParser>();
 
             services.AddTransient<OnlinerParser>();
             services.AddTransient<TutByParser>();
             services.AddTransient<S13Parser>();
+            services.AddTransient<FourpdaParser>();
 
             services.AddScoped<ChromeFilterAttribute>();
             services.AddScoped<CustomExceptionFilterAttribute>();
 
-            //services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(Startup));
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AutoMapping());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
+            services.AddMvc();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-               .AddCookie(opt =>
-               {
-                   opt.LoginPath = new PathString("/Account/Login");
-                   opt.AccessDeniedPath = new PathString("/Account/Login");
-               });
+                 .AddCookie(opt =>
+                 {
+                     opt.LoginPath = new PathString("/News/AllNews");
+                     opt.AccessDeniedPath = new PathString("/Account/Login");
+                 });
 
             services.AddSession(options =>
             {
@@ -133,7 +149,7 @@ namespace GoodNewsAggregator
                     pattern: "{controller=News}/{action=AllNews}/{id?}");
             });
 
-            //Дефолтная страница, если endpoint указан не верно:
+            //Default page redirected, if endpoint entered incorrectly:
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapFallbackToController("AllNews", "News");

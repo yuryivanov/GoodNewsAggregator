@@ -16,15 +16,52 @@ namespace GoodNewsAggregator.HtmlHelpers
             Func<int, string> pageUrl)
         {
             var sb = new StringBuilder();
+
             for (int i = 1; i <= pageInfo.TotalPages; i++)
             {
-                var str = $"<a class=\"btn btn-default\" href={pageUrl(i)}> {i.ToString()}</a>";
-
-                if (i == pageInfo.PageNumber)
+                if (i == 1)
                 {
-                    str = $"<a class=\"btn selected btn btn-primary\" href={pageUrl(i)}> {i.ToString()}</a>";
-                }
-                sb.Append(str);
+                    var str = $"<a class=\"btn btn-default\" href={pageUrl(i)}> {i.ToString()}</a>";
+
+                    if (i == pageInfo.PageNumber)
+                    {
+                        str = $"<a class=\"btn selected btn btn-primary\" href={pageUrl(i)}> {i.ToString()}</a>";
+                    }
+
+                    sb.Append(str);
+
+                    if (pageInfo.PageNumber >= 5)
+                    {
+                        sb.Append("<text id=\"paginationEllipsis\">...</text>");
+                    }
+                }                
+                else if (pageInfo.PageNumber - 2 <= i && i <= pageInfo.PageNumber + 2)
+                {
+                    var str = $"<a class=\"btn btn-default\" href={pageUrl(i)}> {i.ToString()}</a>";
+
+                    if (i == pageInfo.PageNumber)
+                    {
+                        str = $"<a class=\"btn selected btn btn-primary\" href={pageUrl(i)}> {i.ToString()}</a>";
+                    }
+
+                    sb.Append(str);
+                }               
+                else if (i == pageInfo.TotalPages)
+                {
+                    if (pageInfo.TotalPages >= pageInfo.PageNumber + 4)
+                    {
+                        sb.Append("<text id=\"paginationEllipsis\">...</text>");
+                    }
+
+                    var str = $"<a class=\"btn btn-default\" href={pageUrl(i)}> {i.ToString()}</a>";
+
+                    if (i == pageInfo.PageNumber)
+                    {
+                        str = $"<a class=\"btn selected btn btn-primary\" href={pageUrl(i)}> {i.ToString()}</a>";
+                    }
+
+                    sb.Append(str);
+                }               
             }
 
             return new HtmlString(sb.ToString());

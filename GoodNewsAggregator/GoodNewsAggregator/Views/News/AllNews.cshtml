@@ -4,13 +4,15 @@
 @{
     ViewData["Title"] = "Все новости";
 }
-
+@{
+    string[] items = new string[5] { "item1", "item2", "item3", "item4", "item5" };
+}
 
 <section id="entity_section" class="entity_section">
 
     <div class="row">
         <div class="text-center">
-            <h1>ВСЕ НОВОСТИ</h1>
+            <h1 class="main-header">ВСЕ НОВОСТИ</h1>
         </div>
     </div>
 
@@ -52,8 +54,12 @@
             @Html.CreatePagination(Model.PageInfo, i => Url.Action("AllNews", new { page = i }))
         </div>
         <pagination page-model="Model.PageInfo" page-action="Index"></pagination>
-    </div>
-    <br /><br />
+    </div><br />
     <!-- container -->
+
+    @if (Model.RoleName == "Admin")
+    {
+        <a href="/News/Aggregate"> Загрузить Новости </a><br /><br />
+    }
 </section>
 <!-- entity_section -->

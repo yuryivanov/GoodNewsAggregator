@@ -1,6 +1,7 @@
 ﻿@model GoodNewsAggregator.Models.ViewModels.Account.RegisterViewModel
 @{
-    Layout = null;
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+    ViewData["Title"] = "Регистрация";
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -24,7 +25,7 @@
 
             <div class="header form-group">
                 <h1>Регистрация</h1>
-                <span>Введите ваши регистрационные данные для регистрации на сайте. </span>
+                <span>Введите ваши регистрационные данные для регистрации на сайте как пользователь. </span>
             </div>
 
             <div class="content form-group" autocomplete="off">
@@ -53,16 +54,16 @@
             <div class="footer form-group text-center">
                 <input asp-action="Register" type="submit" name="submit" value="Регистрация" class="button" />
             </div>
-
         </form>
-
-        @section Scripts
-    {
-            <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-            <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-        }
     </div>
     <div class="gradient"></div>
+
+
+    @section Scripts
+    {
+        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    }
 
     <script type="text/javascript">
         $(document).ready(function () {

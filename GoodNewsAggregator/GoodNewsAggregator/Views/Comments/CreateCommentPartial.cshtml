@@ -1,0 +1,15 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="row container">
+    <input type="hidden" id="newsId" name="newsId" value="@Model.NewsId" />
+    <div class="col-sm-12">
+        <label for="commentText">Write comment:</label>
+        <textarea name="commentText" class="form-control" id="commentText" rows="3"></textarea>
+    </div>
+
+    <div class="col-sm-12">
+        <button class="btn btn-primary write-comment-btn" id="create-comment-btn">Submit</button>
+    </div>
+</div>

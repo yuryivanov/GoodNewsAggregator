@@ -1,4 +1,5 @@
-﻿using GoodNewsAggregator.DAL.Core.Entities;
+﻿using GoodNewsAggregator.Core.DataTransferObjects;
+using GoodNewsAggregator.Models.ViewModels.Account;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.Models.ViewModels.News
 {
-    public class NewsWithRSSAddressViewModel
+    public class NewsWithCommentsAndRssAddressViewModel
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -18,5 +19,7 @@ namespace GoodNewsAggregator.Models.ViewModels.News
 
         public Guid? RSS_Id { get; set; }
         public string RSSAddress { get; set; }
+
+        public IEnumerable<CommentDto> Comments { get; set; }
     }
 }

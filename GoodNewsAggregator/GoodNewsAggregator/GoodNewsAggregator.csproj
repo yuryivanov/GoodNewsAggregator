@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Collection" Version="7.0.1" />
+    <PackageReference Include="AutoMapper.Contrib.Autofac.DependencyInjection" Version="5.4.0" />
+    <PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="4.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.13">
@@ -33,7 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Comments\" />
     <Folder Include="Views\Roles\" />
     <Folder Include="Views\RSSes\" />
     <Folder Include="Views\Users\" />

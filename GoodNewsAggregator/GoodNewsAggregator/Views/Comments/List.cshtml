@@ -1,0 +1,18 @@
+﻿@using GoodNewsAggregator.Models.ViewModels.Comment;
+@model CommentsListViewModel
+
+@{
+    Layout = null;
+}
+
+<div class="container">
+    <div id="comments-container" class="row">
+        @foreach (var comment in Model.Comments)
+        {
+            @await Html.PartialAsync("Comment", comment)
+        }
+    </div>    
+
+    <hr/>
+    @await Html.PartialAsync("CreateCommentPartial")
+</div>

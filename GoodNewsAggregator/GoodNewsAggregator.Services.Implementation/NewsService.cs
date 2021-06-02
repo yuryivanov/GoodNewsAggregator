@@ -11,15 +11,18 @@ using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using System.Xml;
 using System.ServiceModel.Syndication;
+using AutoMapper;
 
 namespace GoodNewsAggregator.Services.Implementation
 {
     public class NewsService : INewsService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public NewsService(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+        public NewsService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task AddRangeNews(IEnumerable<NewsDto> news)
@@ -66,21 +69,23 @@ namespace GoodNewsAggregator.Services.Implementation
         public async Task<IEnumerable<NewsDto>> FindNews()
         {
             var news = await _unitOfWork.News.FindBy(n
-                        => n.Id.Equals(n.Id))
+                        => n.Id.Equals(n.Id)).OrderByDescending(n=>n.PublicationDate)
                     .ToListAsync();
 
 
-            return news.Select(n => new NewsDto()
-            {
-                Id = n.Id,
-                Address = n.Address,
-                Description = n.Description,
-                GoodnessCoefficient = n.GoodnessCoefficient,
-                PublicationDate = n.PublicationDate,
-                RSS_Id = n.RSSId,
-                Text = n.Text,
-                Title = n.Title
-            }).ToList();
+            //return news.Select(n => new NewsDto()
+            //{
+            //    Id = n.Id,
+            //    Address = n.Address,
+            //    Description = n.Description,
+            //    GoodnessCoefficient = n.GoodnessCoefficient,
+            //    PublicationDate = n.PublicationDate,
+            //    RSS_Id = n.RSSId,
+            //    Text = n.Text,
+            //    Title = n.Title
+            //}).ToList();
+
+            return news.Select(n => _mapper.Map<NewsDto>(n)).ToList();
         }
 
         public async Task<NewsDto> GetNewsById(Guid? id)
