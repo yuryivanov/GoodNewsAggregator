@@ -34,14 +34,14 @@ namespace GoodNewsAggregator.Controllers
         private readonly OnlinerParser _onlinerParser;
         private readonly TutByParser _tutByParser;
         private readonly S13Parser _s13Parser;
-        private readonly FourpdaParser _fourpdaParser;
+        private readonly FourPdaParser _fourpdaParser;
 
         public NewsController(INewsService newsService,
             IRSSService rssService,
             OnlinerParser onlinerParser,
             TutByParser tutByParser,
             S13Parser s13Parser,
-            FourpdaParser fourpdaParser,
+            FourPdaParser fourpdaParser,
             IUnitOfWork unitOfWork,
             ICommentService commentService)
         {

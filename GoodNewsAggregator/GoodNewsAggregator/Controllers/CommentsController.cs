@@ -41,6 +41,28 @@ namespace GoodNewsAggregator.Controllers
             });
         }
 
+        public async Task<IActionResult> CreateCommentPartial(Guid newsId)
+        {
+            var comments = await _commentService.FindCommentsByNewsId(newsId);
+
+            if (HttpContext.User.Identity.Name != null)
+            {
+                var userEmail = HttpContext.User.Identity.Name;
+                var user = await _userService.GetUserByEmail(userEmail);
+                var userRoleName = _roleService.FindRoleById(user.RoleId).Result.Name;
+
+                return View(new CommentsListViewModel
+                {
+                    NewsId = newsId,
+                    Comments = comments
+                });
+            }
+            else
+            {
+                return Ok();
+            }
+        }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]CreateCommentViewModel comment)

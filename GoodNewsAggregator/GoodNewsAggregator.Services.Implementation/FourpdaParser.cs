@@ -5,7 +5,7 @@ using GoodNewsAggregator.Core.Services.Interfaces;
 
 namespace GoodNewsAggregator.Services.Implementation
 {
-    public class FourpdaParser : IWebPageParser
+    public class FourPdaParser : IWebPageParser
     {
         public async Task<string> Parse(string url)
         {

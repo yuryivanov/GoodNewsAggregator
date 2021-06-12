@@ -69,7 +69,7 @@ namespace GoodNewsAggregator.Services.Implementation
         public async Task<IEnumerable<NewsDto>> FindNews()
         {
             var news = await _unitOfWork.News.FindBy(n
-                        => n.Id.Equals(n.Id)).OrderByDescending(n=>n.PublicationDate)
+                        => n.Id.Equals(n.Id)).OrderByDescending(n => n.PublicationDate)
                     .ToListAsync();
 
 
@@ -91,17 +91,25 @@ namespace GoodNewsAggregator.Services.Implementation
         public async Task<NewsDto> GetNewsById(Guid? id)
         {
             var entity = await _unitOfWork.News.GetEntityById(id.GetValueOrDefault());
-            return new NewsDto()
+
+            if (entity != null)
             {
-                Id = entity.Id,
-                Address = entity.Address,
-                Description = entity.Description,
-                GoodnessCoefficient = entity.GoodnessCoefficient,
-                PublicationDate = entity.PublicationDate,
-                RSS_Id = entity.RSSId,
-                Text = entity.Text,
-                Title = entity.Title
-            };
+                return new NewsDto()
+                {
+                    Id = entity.Id,
+                    Address = entity.Address,
+                    Description = entity.Description,
+                    GoodnessCoefficient = entity.GoodnessCoefficient,
+                    PublicationDate = entity.PublicationDate,
+                    RSS_Id = entity.RSSId,
+                    Text = entity.Text,
+                    Title = entity.Title
+                };
+            }
+            else
+            {
+                return null;
+            }           
         }
 
         public async Task<IEnumerable<NewsDto>> GetNewsByRSSId(Guid? id)
@@ -125,17 +133,8 @@ namespace GoodNewsAggregator.Services.Implementation
             else
             {
                 //All news
-                news = await _unitOfWork.News.FindBy(n => n.Id.Equals(n.Id), n => n).Select(entity => new NewsDto()
-                {
-                    Id = entity.Id,
-                    Address = entity.Address,
-                    Description = entity.Description,
-                    GoodnessCoefficient = entity.GoodnessCoefficient,
-                    PublicationDate = entity.PublicationDate,
-                    RSS_Id = entity.RSSId,
-                    Text = entity.Text,
-                    Title = entity.Title
-                }).ToListAsync();
+                news = await _unitOfWork.News.FindBy(n => n != null)
+                        .Select(n => _mapper.Map<NewsDto>(n)).ToListAsync();
             }
 
             return news;

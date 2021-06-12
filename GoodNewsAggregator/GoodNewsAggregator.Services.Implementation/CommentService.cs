@@ -28,7 +28,7 @@ namespace GoodNewsAggregator.Services.Implementation
 
         public async Task<IEnumerable<CommentDto>> FindCommentsByNewsId(Guid id)
         {
-            var comments = await _unitOfWork.Comments.FindBy(comment => comment.NewsId.Equals(id)).ToListAsync();
+            var comments = await _unitOfWork.Comments.FindBy(comment => comment.NewsId.Equals(id)).OrderBy(comments=> comments.PublicationDate).ToListAsync();
 
             return comments.Select(comment => new CommentDto()
             {

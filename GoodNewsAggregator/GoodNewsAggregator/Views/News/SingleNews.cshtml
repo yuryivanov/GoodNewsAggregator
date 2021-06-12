@@ -10,17 +10,20 @@
         <div>
             <div class="entity_wrapper">
                 <div class="entity_meta">
-                    <h4>Дата публикации: @Model.PublicationDate.Value.ToString("dd.MM.yyyy HH:mm");</h4>
-                    <h4>Коэффициент: @Model.GoodnessCoefficient</h4>
-                    <h4>Источник: @Model.RSSAddress </h4>
+                    <h4 id="single-news-left-header-section">Дата публикации: @Model.PublicationDate.Value.ToString("dd.MM.yyyy HH:mm");</h4>
+                    <h4 id="single-news-left-header-section">Коэффициент: @Model.GoodnessCoefficient</h4>
+                    <div class="row">
+                        <h4 id="single-news-left-header-section" class="col-9">Источник: @Model.RSSAddress </h4>
+                        <a class="col-3" asp-action="AllNews">&nbsp;На главную</a>
+                    </div>
                 </div><br />
                 <!-- entity_meta -->
 
                 @if (
-                  (Model.RSS_Id.Equals(new Guid("972036b6-175f-4251-b2d9-296a77b65169")) && !(Model.Text.Contains("</h1>")))
-                  ||
-                  (Model.RSS_Id.Equals(new Guid("f68ffbd2-3ae5-4e80-be43-6021233c6ec9")) && !(Model.Text.Contains("</h1>")))
-                  )
+                       (Model.RSS_Id.Equals(new Guid("972036b6-175f-4251-b2d9-296a77b65169")) && (Model.Text == null || !(Model.Text.Contains("</h1>"))))
+                       ||
+                       (Model.RSS_Id.Equals(new Guid("f68ffbd2-3ae5-4e80-be43-6021233c6ec9")) && (Model.Text == null || !(Model.Text.Contains("</h1>"))))
+                       )
                 {
                     <div class="entity_title">
                         <h1>@Html.Raw(Model.Title)</h1>
@@ -36,16 +39,18 @@
                 <!-- entity_content -->
 
                 <div class="row ">
-                    <button id="comments-display-switcher" class="btn btn-primary col-sm-12" onclick="toggleComments('@Model.Id')">Display comments</button>
+                    <button id="comments-display-switcher" class="btn btn-primary col-sm-12" onclick="toggleComments('@Model.Id')">Показать комментарии</button>
                     @*<div class="container">*@
-                        <div id="comments-container" class="row">
-                            @*@foreach (var comment in Model.Comments)
-                    {
-                        @await Html.PartialAsync("Comments", comment)
-                    }*@
-                        </div>
+                    <div id="comments-container" class="row">
+                        @*@foreach (var comment in Model.Comments)
+                            {
+                                @await Html.PartialAsync("Comments", comment)
+                            }*@
+                    </div>
                     @*</div>*@
-                </div>               
+                    <div class="add-comments-section" id="add-comments-section">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

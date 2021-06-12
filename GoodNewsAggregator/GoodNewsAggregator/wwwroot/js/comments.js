@@ -4,13 +4,17 @@ let isCommentsDisplayed = false;
 function toggleComments(newsId) {
     if (commentsDisplaySwitcherElement != null) {
         if (isCommentsDisplayed == true) {
-            commentsDisplaySwitcherElement.innerHTML = 'Display comments';
+            commentsDisplaySwitcherElement.innerHTML = 'Показать комментарии';
             document.getElementById('comments-container').innerHTML = '';
+            document.getElementById('add-comments-section').innerHTML = '';
         } else {
-            commentsDisplaySwitcherElement.innerHTML = 'Hide comments';
+            commentsDisplaySwitcherElement.innerHTML = 'Скрыть комментарии';
+
             let commentsContainer = document.getElementById('comments-container');
             loadComments(newsId, commentsContainer);
 
+            let addCommentsSectionContainer = document.getElementById('add-comments-section');
+            loadAddCommentsSection(newsId, addCommentsSectionContainer)
         }
         isCommentsDisplayed = !isCommentsDisplayed;
     }
@@ -18,6 +22,24 @@ function toggleComments(newsId) {
     commentsDisplaySwitcherElement.addEventListener('onclose', function () {
         alert('closed');
     }, false);
+}
+
+function loadAddCommentsSection(newsId, addCommentsSectionContainer) {
+    let request = new XMLHttpRequest();
+    //create request
+    request.open('GET', `/Comments/CreateCommentPartial?newsId=${newsId}`, true);
+    //create request handler
+    request.onload = function () {
+        if (request.status >= 200 && request.status < 400) {
+            let resp = request.responseText;
+            addCommentsSectionContainer.innerHTML = resp;
+
+            document.getElementById('create-comment-btn')
+                .addEventListener("click", createComment);
+        }
+    }
+    //send request
+    request.send();
 }
 
 function loadComments(newsId, commentsContainer) {
@@ -30,8 +52,8 @@ function loadComments(newsId, commentsContainer) {
             let resp = request.responseText;
             commentsContainer.innerHTML = resp;
 
-            document.getElementById('create-comment-btn')
-                .addEventListener("click", createComment);
+            //document.getElementById('create-comment-btn')
+            //    .addEventListener("click", createComment);
         }
     }
     //send request
@@ -75,9 +97,12 @@ function createComment() {
 }
 
 var getCommentsIntervalId = setInterval(function () {
-    let url = window.location.pathname;
-    let newsId = url.substring(url.lastIndexOf('/') + 1);
-    let commentsContainer = document.getElementById('comments-container');
-
-    loadComments(newsId, commentsContainer);
-}, 15000);
+    if (commentsDisplaySwitcherElement != null) {
+        if (isCommentsDisplayed == true) {
+            let url = window.location.pathname;
+            let newsId = url.substring(url.lastIndexOf('/') + 1);
+            let commentsContainer = document.getElementById('comments-container');
+            loadComments(newsId, commentsContainer);
+        }
+    }
+}, 5000);

@@ -58,12 +58,12 @@ namespace GoodNewsAggregator
             services.AddScoped<IWebPageParser, OnlinerParser>();
             services.AddScoped<IWebPageParser, TutByParser>();
             services.AddScoped<IWebPageParser, S13Parser>();
-            services.AddScoped<IWebPageParser, FourpdaParser>();
+            services.AddScoped<IWebPageParser, FourPdaParser>();
 
             services.AddTransient<OnlinerParser>();
             services.AddTransient<TutByParser>();
             services.AddTransient<S13Parser>();
-            services.AddTransient<FourpdaParser>();
+            services.AddTransient<FourPdaParser>();
 
             services.AddScoped<ChromeFilterAttribute>();
             services.AddScoped<CustomExceptionFilterAttribute>();

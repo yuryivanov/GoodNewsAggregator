@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GoodNewsAggregator.DAL.Core.Migrations
 {
-    [DbContext(typeof(GoodNewsAggregatorContext))]
     [Migration("20210410223824_Number2")]
     partial class Number2
     {

@@ -17,6 +17,9 @@ namespace NewsAggregators.Services.Implementation.Mapping
             CreateMap<NewsDto, News>().ForMember(dest
                 => dest.RSSId, opt => opt.MapFrom(src => src.RSS_Id)
             );
+
+            CreateMap<RSS, RSSDto>();
+            CreateMap<RSSDto, RSS>();
         }
     }
 }

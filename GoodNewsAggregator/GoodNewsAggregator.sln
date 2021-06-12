@@ -23,6 +23,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.DAL.Repo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.DAL.Repositories.Interfaces", "GoodNewsAggregator.DAL.RepositoriesImplementation\GoodNewsAggregator.DAL.Repositories.Interfaces.csproj", "{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.WebAPI", "GoodNewsAggregator.WebAPI\GoodNewsAggregator.WebAPI.csproj", "{CFAFD892-5FE6-43C8-8249-C65E7F916810}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.DAL.CQRS", "GoodNewsAggregator.DAL.CQRS\GoodNewsAggregator.DAL.CQRS.csproj", "{52F50833-E050-4900-9D37-5C043E3367FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,14 @@ Global
 		{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFAFD892-5FE6-43C8-8249-C65E7F916810}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFAFD892-5FE6-43C8-8249-C65E7F916810}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFAFD892-5FE6-43C8-8249-C65E7F916810}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFAFD892-5FE6-43C8-8249-C65E7F916810}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52F50833-E050-4900-9D37-5C043E3367FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52F50833-E050-4900-9D37-5C043E3367FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52F50833-E050-4900-9D37-5C043E3367FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52F50833-E050-4900-9D37-5C043E3367FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +80,7 @@ Global
 		{7D4DD147-4095-4534-A611-A82D05FA8132} = {480AAEAA-8432-41D9-B8E6-E7BE60ACA762}
 		{A70AB826-2D30-4768-BD83-1C1C118792CA} = {D92E3C77-7B88-4424-A8A6-54C02A27D676}
 		{06F29CC9-C69D-4833-ADA6-CEDC1C5A88EF} = {D92E3C77-7B88-4424-A8A6-54C02A27D676}
+		{52F50833-E050-4900-9D37-5C043E3367FC} = {D92E3C77-7B88-4424-A8A6-54C02A27D676}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {130BE430-608B-49A3-BF77-C8B7508533B4}

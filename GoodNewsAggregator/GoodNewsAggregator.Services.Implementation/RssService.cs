@@ -40,11 +40,18 @@ namespace GoodNewsAggregator.Services.Implementation
         {
             var rSS = await _unitOfWork.RSS.GetEntityById(id);
 
-            return new RSSDto()
+            if (rSS != null)
             {
-                Id = rSS.Id,
-                Address = rSS.Address
-            };
+                return new RSSDto()
+                {
+                    Id = rSS.Id,
+                    Address = rSS.Address
+                };
+            }
+            else
+            {
+                return null;
+            }            
         }
     }
 }

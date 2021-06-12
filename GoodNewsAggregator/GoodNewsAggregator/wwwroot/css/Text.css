@@ -86,3 +86,11 @@ a {
     min-height: calc(100vh - 80px);
 }
 
+#login-to-see-comments {
+    font-family: cursive;
+    color: red;
+}
+
+#single-news-left-header-section {
+font-size: 15px;
+}
