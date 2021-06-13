@@ -2,7 +2,7 @@
 
 namespace GoodNewsAggregator.Core.DataTransferObjects
 {
-    public class RSSDto : IDtoModel
+    public class RSSDto
     {
         public Guid Id { get; set; }
         public string Address { get; set; }

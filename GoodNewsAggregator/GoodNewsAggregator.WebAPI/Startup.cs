@@ -5,6 +5,7 @@ using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Implementation.Repositories;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using GoodNewsAggregator.Services.Implementation;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -62,6 +63,8 @@ namespace GoodNewsAggregator.WebAPI
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+
+            services.AddMediatR(typeof(Startup));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

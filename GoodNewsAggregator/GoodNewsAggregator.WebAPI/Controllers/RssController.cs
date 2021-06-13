@@ -41,10 +41,10 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             return Ok(rsses);
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] RSSDto value)
-        {
-            //Send only properties of the model that should be updated 
-        }
+        //[HttpPatch("{id}")]
+        //public async Task<IActionResult> Patch(int id, [FromBody] RSSDto value)
+        //{
+        //    //Send only properties of the model that should be updated 
+        //}
     }
 }

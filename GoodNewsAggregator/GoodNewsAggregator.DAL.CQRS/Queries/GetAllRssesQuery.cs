@@ -6,8 +6,7 @@ using System.Text;
 
 namespace GoodNewsAggregator.DAL.CQRS.Queries
 {
-    public class GetRssByIdQuery : IRequest<RSSDto>
+    public class GetAllRssesQuery : IRequest<IEnumerable<RSSDto>>
     {
-        public Guid Id { get; set; }
     }
 }

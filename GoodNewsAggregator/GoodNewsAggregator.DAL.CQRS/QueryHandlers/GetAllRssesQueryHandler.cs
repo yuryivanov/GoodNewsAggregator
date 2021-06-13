@@ -10,23 +10,27 @@ using GoodNewsAggregator.Core.DataTransferObjects;
 using AutoMapper;
 using MediatR;
 using System.Threading;
+using System.Linq;
 
 namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers
 {
-    public class GetRssByIdQueryHandler : IRequestHandler<GetRssByIdQuery, RSSDto>
+    public class GetAllRssesQueryHandler : IRequestHandler<GetAllRssesQuery, IEnumerable<RSSDto>>
     {
         private readonly GoodNewsAggregatorContext _dbContext;
-        private readonly IMapper _mapper; 
+        private readonly IMapper _mapper;
 
-        public GetRssByIdQueryHandler(GoodNewsAggregatorContext dbContext, IMapper mapper)
+        public GetAllRssesQueryHandler(GoodNewsAggregatorContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
 
-        public async Task<RSSDto> Handle(GetRssByIdQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<RSSDto>> Handle(GetAllRssesQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<RSSDto>(await _dbContext.RSS.FirstOrDefaultAsync(rss => rss.Id.Equals(request.Id), cancellationToken));
+
+            return await _dbContext.RSS
+                .Select(sourse => _mapper.Map<RSSDto>(sourse))
+                .ToListAsync(cancellationToken);
         }
     }
 }

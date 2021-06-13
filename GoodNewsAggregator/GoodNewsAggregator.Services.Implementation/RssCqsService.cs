@@ -12,47 +12,32 @@ using GoodNewsAggregator.DAL.Repositories.Implementation;
 using System.Xml;
 using System.ServiceModel.Syndication;
 using AutoMapper;
+using MediatR;
+using GoodNewsAggregator.DAL.CQRS.Queries;
 
 namespace GoodNewsAggregator.Services.Implementation
 {
     public class RssCqsService : IRSSService
     {
         private readonly IMapper _mapper;
-        public RssCqsService(IMapper mapper)
+        private readonly IMediator _mediator;
+        public RssCqsService(IMapper mapper, IMediator mediator)
         {
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<IEnumerable<RSSDto>> FindRss()
         {
-            //var rSSes = await _unitOfWork.RSS.FindBy(n
-            //            => n.Id.Equals(n.Id))
-            //        .ToListAsync();
-
-
-            //return rSSes.Select(n => new RSSDto()
-            //{
-            //    Id = n.Id,
-            //    Address = n.Address
-            //}).ToList();
+            //MediatR - dispatcher that send requests to db
+            var query = new GetAllRssesQuery();
+            return await _mediator.Send(query);
         }
 
         public async Task<RSSDto> FindRssById(Guid id)
         {
-            //var rSS = await _unitOfWork.RSS.GetEntityById(id);
-
-            //if (rSS != null)
-            //{
-            //    return new RSSDto()
-            //    {
-            //        Id = rSS.Id,
-            //        Address = rSS.Address
-            //    };
-            //}
-            //else
-            //{
-            //    return null;
-            //}            
+            var query = new GetRssByIdQuery() { Id = id};
+            return await _mediator.Send(query);
         }
     }
 }
