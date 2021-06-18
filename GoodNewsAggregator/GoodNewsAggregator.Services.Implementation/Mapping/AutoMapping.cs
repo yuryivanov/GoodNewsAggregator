@@ -20,6 +20,9 @@ namespace NewsAggregators.Services.Implementation.Mapping
 
             CreateMap<RSS, RSSDto>();
             CreateMap<RSSDto, RSS>();
+
+            CreateMap<Comment, CommentDto>();
+            CreateMap<CommentDto, Comment>();
         }
     }
 }

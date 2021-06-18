@@ -9,15 +9,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GoodNewsAggregator.DAL.Core.Migrations
 {
-    [Migration("20210410223824_Number2")]
-    partial class Number2
+    [DbContext(typeof(GoodNewsAggregatorContext))]
+    [Migration("20210618195453_AddFullNameColumnToCommentsTable")]
+    partial class AddFullNameColumnToCommentsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.Comment", b =>
@@ -25,6 +26,9 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("NewsId")
                         .HasColumnType("uniqueidentifier");
@@ -65,7 +69,7 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                     b.Property<DateTime?>("PublicationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("RSSId")
+                    b.Property<Guid>("RSSId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
@@ -115,7 +119,10 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Login")
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
@@ -144,13 +151,21 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("News");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.News", b =>
                 {
                     b.HasOne("GoodNewsAggregator.DAL.Core.Entities.RSS", "RSS")
                         .WithMany("NewsCollection")
-                        .HasForeignKey("RSSId");
+                        .HasForeignKey("RSSId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RSS");
                 });
 
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.User", b =>
@@ -160,6 +175,28 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.News", b =>
+                {
+                    b.Navigation("CommentCollection");
+                });
+
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.RSS", b =>
+                {
+                    b.Navigation("NewsCollection");
+                });
+
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.Role", b =>
+                {
+                    b.Navigation("UserCollection");
+                });
+
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.User", b =>
+                {
+                    b.Navigation("CommentCollection");
                 });
 #pragma warning restore 612, 618
         }

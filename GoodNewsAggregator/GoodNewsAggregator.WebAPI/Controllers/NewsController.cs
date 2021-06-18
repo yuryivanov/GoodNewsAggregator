@@ -1,4 +1,5 @@
-﻿using GoodNewsAggregator.Core.Services.Interfaces;
+﻿using GoodNewsAggregator.Core.DataTransferObjects;
+using GoodNewsAggregator.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -28,23 +29,44 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             }
             else
             {
-                var news = await _newsService.GetNewsById(id);
-                if (news != null)
+                var news = await _newsService.GetNewsWithRSSAddressById(id);
+                if (news !=null)
                 {
                     return Ok(news);
                 }
                 else
                 {
-                    return NotFound();                   
-                }                
+                    return NotFound();
+                }               
             }
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
-        {           
-            var news = await _newsService.GetNewsByRSSId(null);
+        {
+            var news = await _newsService.GetNewsWithRSSAddressById(null);
             return Ok(news);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(IEnumerable<NewsDto> news)
+        {
+            try
+            {
+                var res = await _newsService.AddRangeNews(news);
+                if (res > 0)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }

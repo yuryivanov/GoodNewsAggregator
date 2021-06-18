@@ -16,6 +16,8 @@ namespace GoodNewsAggregator.DAL.Core.Entities
         public virtual News News { get; set; }
 
         public Guid UserId { get; set; }
-        public virtual User User { get; set; }       
+        public virtual User User { get; set; }
+
+        public string FullName { get; set; }
     }
 }

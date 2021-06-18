@@ -9,16 +9,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GoodNewsAggregator.DAL.Core.Migrations
 {
-
-    [Migration("20210525201410_newRss")]
-    partial class newRss
+    [DbContext(typeof(GoodNewsAggregatorContext))]
+    [Migration("20210613211734_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.Comment", b =>
@@ -148,6 +148,10 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("News");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.News", b =>
@@ -157,6 +161,8 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                         .HasForeignKey("RSSId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("RSS");
                 });
 
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.User", b =>
@@ -166,6 +172,28 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.News", b =>
+                {
+                    b.Navigation("CommentCollection");
+                });
+
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.RSS", b =>
+                {
+                    b.Navigation("NewsCollection");
+                });
+
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.Role", b =>
+                {
+                    b.Navigation("UserCollection");
+                });
+
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.User", b =>
+                {
+                    b.Navigation("CommentCollection");
                 });
 #pragma warning restore 612, 618
         }

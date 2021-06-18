@@ -19,11 +19,9 @@ namespace GoodNewsAggregator.Services.Implementation
 {
     public class RssCqsService : IRSSService
     {
-        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-        public RssCqsService(IMapper mapper, IMediator mediator)
+        public RssCqsService(IMediator mediator)
         {
-            _mapper = mapper;
             _mediator = mediator;
         }
 

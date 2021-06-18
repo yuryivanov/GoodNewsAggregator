@@ -32,14 +32,12 @@ namespace GoodNewsAggregator.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICommentService _commentService;
         private readonly OnlinerParser _onlinerParser;
-        private readonly TutByParser _tutByParser;
         private readonly S13Parser _s13Parser;
         private readonly FourPdaParser _fourpdaParser;
 
         public NewsController(INewsService newsService,
             IRSSService rssService,
             OnlinerParser onlinerParser,
-            TutByParser tutByParser,
             S13Parser s13Parser,
             FourPdaParser fourpdaParser,
             IUnitOfWork unitOfWork,
@@ -48,7 +46,6 @@ namespace GoodNewsAggregator.Controllers
             _newsService = newsService;
             _rssService = rssService;
             _onlinerParser = onlinerParser;
-            _tutByParser = tutByParser;
             _s13Parser = s13Parser;
             _fourpdaParser = fourpdaParser;
             _unitOfWork = unitOfWork;

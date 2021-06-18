@@ -2,7 +2,7 @@
 
 namespace GoodNewsAggregator.DAL.Core.Migrations
 {
-    public partial class _4 : Migration
+    public partial class Hangfire : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

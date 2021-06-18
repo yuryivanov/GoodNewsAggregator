@@ -11,8 +11,8 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -23,8 +23,8 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 name: "RSS",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Address = table.Column<string>(nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -35,10 +35,11 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Login = table.Column<string>(nullable: true),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    RoleId = table.Column<Guid>(nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,14 +56,14 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 name: "News",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(nullable: true),
-                    Address = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    PublicationDate = table.Column<DateTime>(nullable: true),
-                    Text = table.Column<string>(nullable: true),
-                    GoodnessCoefficient = table.Column<double>(nullable: true),
-                    RSSId = table.Column<Guid>(nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublicationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GoodnessCoefficient = table.Column<double>(type: "float", nullable: true),
+                    RSSId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,18 +73,18 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                         column: x => x.RSSId,
                         principalTable: "RSS",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    Text = table.Column<string>(nullable: true),
-                    PublicationDate = table.Column<DateTime>(nullable: false),
-                    NewsId = table.Column<Guid>(nullable: false),
-                    UserId = table.Column<Guid>(nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublicationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NewsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
