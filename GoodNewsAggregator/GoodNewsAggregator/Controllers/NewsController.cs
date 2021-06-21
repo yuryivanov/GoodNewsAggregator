@@ -3,24 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.Models;
 using System.Diagnostics;
-using System.Linq;
-using System.IO;
-using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.Models.ViewModels.News;
-using System.Xml;
 using GoodNewsAggregator.Core.DataTransferObjects;
 using Serilog;
-using Serilog.Events;
-using GoodNewsAggregator;
-using GoodNewsAggregator.Filters;
 using GoodNewsAggregator.Services.Implementation;
-using GoodNewsAggregator.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
 
 namespace GoodNewsAggregator.Controllers
@@ -55,30 +46,38 @@ namespace GoodNewsAggregator.Controllers
         [HttpGet]
         public async Task<IActionResult> Aggregate()
         {
-            if (HttpContext.User.Identity.Name != null)
+            try
             {
-                var userEmail = HttpContext.User.Identity.Name;
-                var user = await _unitOfWork.Users.FindBy(user => user.Email.Equals(userEmail)).FirstOrDefaultAsync();
-                var userRoleName = (await _unitOfWork.Roles.FindBy(role => role.Id.Equals(user.RoleId)).FirstOrDefaultAsync()).Name;
-
-                if (userRoleName == "Admin")
+                if (HttpContext.User.Identity.Name != null)
                 {
-                    return View(new AggregateNewsViewModel()
+                    var userEmail = HttpContext.User.Identity.Name;
+                    var user = await _unitOfWork.Users.FindBy(user => user.Email.Equals(userEmail)).FirstOrDefaultAsync();
+                    var userRoleName = (await _unitOfWork.Roles.FindBy(role => role.Id.Equals(user.RoleId)).FirstOrDefaultAsync()).Name;
+
+                    if (userRoleName == "Admin")
                     {
-                        Email = userEmail,
-                        Name = user.FullName,
-                        RoleName = userRoleName
-                    });
+                        return View(new AggregateNewsViewModel()
+                        {
+                            Email = userEmail,
+                            Name = user.FullName,
+                            RoleName = userRoleName
+                        });
+                    }
+                    else
+                    {
+                        return StatusCode(403);
+                    }
                 }
                 else
                 {
                     return StatusCode(403);
                 }
             }
-            else
+            catch (Exception e)
             {
-                return StatusCode(403);
-            }
+                Log.Error(e, "Aggregate was not successful");
+                throw;
+            }            
         }
 
         //POST: News/Aggregate
@@ -201,7 +200,7 @@ namespace GoodNewsAggregator.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(e, $"Unhandled exception was thrown by app");
+                Log.Error(e, $"AllNews method failed");
                 throw;
             }
         }
@@ -245,7 +244,7 @@ namespace GoodNewsAggregator.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(e, $"Unhandled exception was thrown by app");
+                Log.Error(e, $"SingleNews method failed");
                 throw;
             }
         }
@@ -259,7 +258,7 @@ namespace GoodNewsAggregator.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(e, $"Unhandled exception was thrown by app");
+                Log.Error(e, $"Error method failed");
                 throw;
             }
         }

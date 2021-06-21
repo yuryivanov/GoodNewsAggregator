@@ -362,3 +362,13 @@ input.input-validation-error:focus {
     display: block;
     color: #f0162f;
 }
+
+.login-register-back-link {
+    color: #0a58ca;
+    text-decoration: none;
+    font-size: 15px
+}
+
+    .login-register-back-link:hover {
+        color: #c60a00;
+    }

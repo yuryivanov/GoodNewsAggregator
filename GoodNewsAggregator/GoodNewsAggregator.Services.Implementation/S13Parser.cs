@@ -10,44 +10,52 @@ namespace GoodNewsAggregator.Services.Implementation
     {
         public async Task<string> Parse(string url)
         {
-            var web = new HtmlWeb();
-
-            var htmlDoc = web.LoadFromWebAsync(url);
-
-            var htmlDocResult = htmlDoc.Result;
-
-            var node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='content']");
-
-            if (node.InnerHtml.IndexOf("<h2 class=\"comments\">Читайте по теме:</h2>") >= 0)
+            try
             {
-                int index = node.InnerHtml.IndexOf("<h2 class=\"comments\">Читайте по теме:</h2>");
+                var web = new HtmlWeb();
 
-                node.InnerHtml = node.InnerHtml.Substring(0, index);
+                var htmlDoc = web.LoadFromWebAsync(url);
+
+                var htmlDocResult = htmlDoc.Result;
+
+                var node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='content']");
+
+                if (node.InnerHtml.IndexOf("<h2 class=\"comments\">Читайте по теме:</h2>") >= 0)
+                {
+                    int index = node.InnerHtml.IndexOf("<h2 class=\"comments\">Читайте по теме:</h2>");
+
+                    node.InnerHtml = node.InnerHtml.Substring(0, index);
+                }
+
+                if (node.InnerHtml.IndexOf("<div class=\"content\">") >= 0)
+                {
+                    int index2 = node.InnerHtml.IndexOf("<div class=\"content\">");
+
+                    string htmlShouldBeRemoved = node.InnerHtml.Substring(0, index2);
+
+                    node.InnerHtml = node.InnerHtml.Replace(htmlShouldBeRemoved, "");
+                }
+
+                node.InnerHtml = node.InnerHtml.
+                    Replace("<ul class=\"cols top\">", "<ul class=\"cols top\"  style=\"display: none;\">")
+                    .Replace("<img class=\"main lazyload\"", "<img class=\"main lazyload\" style=\"display: none;\"")
+                    .Replace("<iframe", "<iframe style=\"display: none;\"")
+                    .Replace("<div class=\"swiper-container slides\">", "<div class=\"swiper-container slides\" style=\"display: none;\">")
+                    .Replace("<ul", "<text")
+                    .Replace("</ul", "</text");
+
+
+                if (node != null)
+                {
+                    return node.InnerHtml;
+                }
+                return null;
             }
-
-            if (node.InnerHtml.IndexOf("<div class=\"content\">") >= 0)
+            catch (Exception e)
             {
-                int index2 = node.InnerHtml.IndexOf("<div class=\"content\">");
-
-                string htmlShouldBeRemoved = node.InnerHtml.Substring(0, index2);
-
-                node.InnerHtml = node.InnerHtml.Replace(htmlShouldBeRemoved, "");
-            }
-
-            node.InnerHtml = node.InnerHtml.
-                Replace("<ul class=\"cols top\">", "<ul class=\"cols top\"  style=\"display: none;\">")
-                .Replace("<img class=\"main lazyload\"", "<img class=\"main lazyload\" style=\"display: none;\"")
-                .Replace("<iframe", "<iframe style=\"display: none;\"")
-                .Replace("<div class=\"swiper-container slides\">", "<div class=\"swiper-container slides\" style=\"display: none;\">")
-                .Replace("<ul", "<text")
-                .Replace("</ul", "</text");
-
-
-            if (node != null)
-            {
-                return node.InnerHtml;
-            }
-            return null;
+                Log.Error(e, "S13Parser was not successful");
+                throw;
+            }            
         }
     }
 }

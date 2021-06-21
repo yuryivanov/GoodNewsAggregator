@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using GoodNewsAggregator.Models;
+using Serilog;
 
 namespace GoodNewsAggregator.TagHelpers
 {
@@ -33,19 +31,27 @@ namespace GoodNewsAggregator.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            var urlHelper = _urlHelperFactory.GetUrlHelper(ViewContext); //urlHelper created
-            var result = new TagBuilder("div"); //div tags created: <div></div>
-
-            for (int i = 1; i <= PageModel.TotalPages; i++)
+            try
             {
-                var tag = new TagBuilder("a"); //a tags created: <a></a>
-                var anchorInnerHtml = i.ToString(); //url for each page of 1 2 3 4 5 6 ... created
-                tag.Attributes["href"] = urlHelper.Action(PageAction, new { page = i }); //href attribute for <a></a> created
-                tag.InnerHtml.Append(anchorInnerHtml); //url placed in tag <a>
-                result.InnerHtml.AppendHtml(tag); //url with tag <a> placed in tag <div>
-            }
+                var urlHelper = _urlHelperFactory.GetUrlHelper(ViewContext); //urlHelper created
+                var result = new TagBuilder("div"); //div tags created: <div></div>
 
-            output.Content.AppendHtml(result.InnerHtml); //pagination created
+                for (int i = 1; i <= PageModel.TotalPages; i++)
+                {
+                    var tag = new TagBuilder("a"); //a tags created: <a></a>
+                    var anchorInnerHtml = i.ToString(); //url for each page of 1 2 3 4 5 6 ... created
+                    tag.Attributes["href"] = urlHelper.Action(PageAction, new { page = i }); //href attribute for <a></a> created
+                    tag.InnerHtml.Append(anchorInnerHtml); //url placed in tag <a>
+                    result.InnerHtml.AppendHtml(tag); //url with tag <a> placed in tag <div>
+                }
+
+                output.Content.AppendHtml(result.InnerHtml); //pagination created
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Process was not successful");
+                throw;
+            }            
         }
 
         //public string GetAnchorInnerHtml(int i, PageInfo info)

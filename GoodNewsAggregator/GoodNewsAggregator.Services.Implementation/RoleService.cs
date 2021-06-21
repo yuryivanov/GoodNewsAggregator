@@ -4,13 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DataTransferObjects;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core;
-using GoodNewsAggregator.DAL.Core.Entities;
-using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
-using System.Xml;
-using System.ServiceModel.Syndication;
+using Serilog;
 
 namespace GoodNewsAggregator.Services.Implementation
 {
@@ -24,26 +20,42 @@ namespace GoodNewsAggregator.Services.Implementation
 
         public async Task<IEnumerable<RoleDto>> FindRoles()
         {
-            var roles = await _unitOfWork.Roles.FindBy(n
-                        => n.Id.Equals(n.Id))
-                    .ToListAsync();
-           
-            return roles.Select(n => new RoleDto()
+            try
             {
-                Id = n.Id,
-                Name = n.Name
-            }).ToList();
+                var roles = await _unitOfWork.Roles.FindBy(n
+                         => n.Id.Equals(n.Id))
+                     .ToListAsync();
+
+                return roles.Select(n => new RoleDto()
+                {
+                    Id = n.Id,
+                    Name = n.Name
+                }).ToList();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "FindRoles was not successful");
+                throw;
+            }            
         }
 
         public async Task<RoleDto> FindRoleById(Guid id)
         {
-            var role = await _unitOfWork.Roles.GetEntityById(id);
-
-            return new RoleDto()
+            try
             {
-                Id = role.Id,
-                Name = role.Name
-            };
+                var role = await _unitOfWork.Roles.GetEntityById(id);
+
+                return new RoleDto()
+                {
+                    Id = role.Id,
+                    Name = role.Name
+                };
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "FindRoleById was not successful");
+                throw;
+            }            
         }
     }
 }

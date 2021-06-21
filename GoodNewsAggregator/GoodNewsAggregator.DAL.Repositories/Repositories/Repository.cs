@@ -2,11 +2,11 @@
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.DAL.Repositories.Implementation.Repositories
@@ -23,53 +23,117 @@ namespace GoodNewsAggregator.DAL.Repositories.Implementation.Repositories
         }
         public async Task<T> GetEntityById(Guid id)
         {
-            return await Table.FirstOrDefaultAsync(entity => entity.Id.Equals(id));
+            try
+            {
+                return await Table.FirstOrDefaultAsync(entity => entity.Id.Equals(id));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "GetEntityById was not successful");
+                throw;
+            }            
         }
 
         public IQueryable<T> FindBy(Expression<Func<T, bool>> predicate,
               params Expression<Func<T, object>>[] includes)
         {
-            var result = Table.Where(predicate);
-            if (includes.Any())
+            try
             {
-                result = includes
-                    .Aggregate(result,
-                        (current, include)
-                            => current.Include(include));
-            }
+                var result = Table.Where(predicate);
+                if (includes.Any())
+                {
+                    result = includes
+                        .Aggregate(result,
+                            (current, include)
+                                => current.Include(include));
+                }
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "FindBy was not successful");
+                throw;
+            }            
         }
 
         public async Task Add(T entity)
         {
-            await Table.AddAsync(entity);
+            try
+            {
+                await Table.AddAsync(entity);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Add was not successful");
+                throw;
+            }           
         }
 
         public async Task AddRange(IEnumerable<T> entities)
         {
-            await Table.AddRangeAsync(entities);
+            try
+            {
+                await Table.AddRangeAsync(entities);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "AddRange was not successful");
+                throw;
+            }            
         }              
 
         public async Task Update(T entitity)
         {
-            Table.Update(entitity);
+            try
+            {
+                Table.Update(entitity);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Update was not successful");
+                throw;
+            }            
         }
 
         public async Task Remove(T entity)
         {
-            Table.Remove(entity);
+            try
+            {
+                Table.Remove(entity);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Remove was not successful");
+                throw;
+            }            
         }
 
         public async Task RemoveRange(IEnumerable<T> entitities)
         {
-            Table.RemoveRange(entitities);
+            try
+            {
+                Table.RemoveRange(entitities);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "RemoveRange was not successful");
+                throw;
+            }            
         }
 
         public void Dispose()
         {
-            Db?.Dispose(); //Optimization of request after request fail
-            GC.SuppressFinalize(this); //Clean current not used object
+            try
+            {
+                Db?.Dispose(); //Optimization of request after request fail
+                GC.SuppressFinalize(this); //Clean current not used object
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Dispose was not successful");
+                throw;
+            }            
         }
     }
 }

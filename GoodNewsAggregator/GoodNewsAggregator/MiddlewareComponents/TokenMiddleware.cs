@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.MiddlewareComponents
@@ -18,17 +17,25 @@ namespace GoodNewsAggregator.MiddlewareComponents
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var token = context.Request.Query["token"];
+            try
+            {
+                var token = context.Request.Query["token"];
 
-            if (token != "fadsfe32fsdf")
-            {
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsync("Invalid token");
+                if (token != "fadsfe32fsdf")
+                {
+                    context.Response.StatusCode = 401;
+                    await context.Response.WriteAsync("Invalid token");
+                }
+                else
+                {
+                    await _next.Invoke(context);
+                }
             }
-            else
+            catch (Exception e)
             {
-                await _next.Invoke(context);
-            }
+                Log.Error(e, "TokenMiddleware was not successful");
+                throw;
+            }            
         }
     }
 }

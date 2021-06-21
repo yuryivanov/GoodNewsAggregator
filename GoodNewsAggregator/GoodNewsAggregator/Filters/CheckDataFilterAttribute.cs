@@ -1,8 +1,7 @@
 ﻿using GoodNewsAggregator.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.Filters
@@ -17,14 +16,22 @@ namespace GoodNewsAggregator.Filters
         }
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var isContains = context.HttpContext.Request.QueryString.Value?.Contains("abc");
-            if (isContains.GetValueOrDefault())
+            try
             {
-                context.ActionArguments["hiddenId"] = 42;
-                context.ActionArguments["newsId"] = _newsService.GetNewsByRSSId(null);
-            }
+                var isContains = context.HttpContext.Request.QueryString.Value?.Contains("abc");
+                if (isContains.GetValueOrDefault())
+                {
+                    context.ActionArguments["hiddenId"] = 42;
+                    context.ActionArguments["newsId"] = _newsService.GetNewsByRSSId(null);
+                }
 
-            await next();
+                await next();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "OnActionExecutionAsync was not successful");
+                throw;
+            }            
         }
     }
 }

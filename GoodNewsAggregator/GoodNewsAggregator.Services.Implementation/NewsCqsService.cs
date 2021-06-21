@@ -4,11 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DataTransferObjects;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core;
-using GoodNewsAggregator.DAL.Core.Entities;
-using GoodNewsAggregator.DAL.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using GoodNewsAggregator.DAL.Repositories.Implementation;
 using System.Xml;
 using System.ServiceModel.Syndication;
 using AutoMapper;
@@ -21,9 +16,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
-using AutoMapper.Configuration;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.IO;
 
 namespace GoodNewsAggregator.Services.Implementation
@@ -32,20 +25,18 @@ namespace GoodNewsAggregator.Services.Implementation
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly OnlinerParser _onlinerParser;
         private readonly S13Parser _s13Parser;
         private readonly FourPdaParser _fourpdaParser;
         public NewsCqsService(IMediator mediator,
             IMapper mapper,
-            IUnitOfWork unitOfWork,
             OnlinerParser onlinerParser,
             S13Parser s13Parser,
             FourPdaParser fourpdaParser)
         {
             _mediator = mediator;
             _mapper = mapper;
-            _unitOfWork = unitOfWork;
+            //_unitOfWork = unitOfWork;
             _onlinerParser = onlinerParser;
             _s13Parser = s13Parser;
             _fourpdaParser = fourpdaParser;
@@ -53,9 +44,17 @@ namespace GoodNewsAggregator.Services.Implementation
 
         public async Task<int> AddRangeNews(IEnumerable<NewsDto> news)
         {
-            var command = new AddRangeNewsCommand() { News = news };
-            int res = await _mediator.Send(command);
-            return res;
+            try
+            {
+                var command = new AddRangeNewsCommand() { News = news };
+                int res = await _mediator.Send(command);
+                return res;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "AddRangeNews was not successful");
+                throw;
+            }            
         }
 
         public async Task<NewsDto> EditNews(NewsDto news)
@@ -85,8 +84,16 @@ namespace GoodNewsAggregator.Services.Implementation
 
         public async Task<IEnumerable<NewsWithRSSAddressDto>> GetNewsWithRSSAddressById(Guid? id)
         {
-            var query = new GetNewsByIdWithRssAddressQuery() { Id = id };
-            return await _mediator.Send(query);
+            try
+            {
+                var query = new GetNewsByIdWithRssAddressQuery() { Id = id };
+                return await _mediator.Send(query);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "GetNewsWithRSSAddressById was not successful");
+                throw;
+            }            
         }
 
         public async Task<IEnumerable<NewsDto>> GetNewsInfoFromRssSourse(RSSDto rssSourse)
@@ -176,134 +183,142 @@ namespace GoodNewsAggregator.Services.Implementation
 
         public async Task RateNews()
         {
-            //Get dictionary<word, mark>
-            dynamic jsonFile = JsonConvert.DeserializeObject(File.ReadAllText("D:\\it-academy\\New folder (2)\\GoodNewsAggregator\\GoodNewsAggregator\\GoodNewsAggregator.WebAPI\\appsettings.json"));
-            var url = $"{jsonFile["CoefficientStrings"]["Coefficients"]}";
-
-            byte[] bytes = Encoding.Default.GetBytes(File.ReadAllText($"{url}"));
-            string myString = Encoding.UTF8.GetString(bytes);
-
-            var coefficients = JsonConvert.DeserializeObject<Coefficients>(myString);
-
-            //Get News
-            var allNews = await GetNewsWithRSSAddressById(null);
-            var allNewsWithoutGoodnessCoefficient = allNews.Where(x => x.GoodnessCoefficient == null).ToList();
-
-            var iteration = 0;
-            //var singleNews = allNewsWithoutGoodnessCoefficient[0];            
-            foreach (var singleNews in allNewsWithoutGoodnessCoefficient)
+            try
             {
-                iteration += 1;
-                var newsText = singleNews.Text;
+                //Get dictionary<word, mark>
+                dynamic jsonFile = JsonConvert.DeserializeObject(File.ReadAllText("D:\\it-academy\\New folder (2)\\GoodNewsAggregator\\GoodNewsAggregator\\GoodNewsAggregator.WebAPI\\appsettings.json"));
+                var url = $"{jsonFile["CoefficientStrings"]["Coefficients"]}";
 
-                //Get news text without html tags
-                string StripHTML(string input)
+                byte[] bytes = Encoding.Default.GetBytes(File.ReadAllText($"{url}"));
+                string myString = Encoding.UTF8.GetString(bytes);
+
+                var coefficients = JsonConvert.DeserializeObject<Coefficients>(myString);
+
+                //Get News
+                var allNews = await GetNewsWithRSSAddressById(null);
+                var allNewsWithoutGoodnessCoefficient = allNews.Where(x => x.GoodnessCoefficient == null).ToList();
+
+                var iteration = 0;
+                //var singleNews = allNewsWithoutGoodnessCoefficient[0];            
+                foreach (var singleNews in allNewsWithoutGoodnessCoefficient)
                 {
-                    return Regex.Replace(input, "<.*?>", String.Empty);
-                }
-                                
-                int start = newsText.IndexOf("<script type=\"text/javascript\">");
-                int end = newsText.IndexOf("</script>");
-                if (start != -1 && end != -1)
-                {
-                    newsText = newsText.Substring(0, start) + "" +
-                      newsText.Substring(end + 9);
-                }                
+                    iteration += 1;
+                    var newsText = singleNews.Text;
 
-                newsText = StripHTML(newsText);
-                newsText = newsText.Replace("\t", "").Replace("\n", "").Replace("\r", "");
-
-                //Send POST request to do lemmatization
-                using (var httpClient = new HttpClient())
-                {
-                    httpClient.DefaultRequestHeaders
-                        .Accept
-                        .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
-
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=62e6440e1c9e5853620c0dd4ea3854b5e785b0eb")
+                    //Get news text without html tags
+                    string StripHTML(string input)
                     {
-                        Content = new StringContent("[{\"text\":\"" + newsText + "\"}]",
+                        return Regex.Replace(input, "<.*?>", String.Empty);
+                    }
 
-                            Encoding.UTF8,
-                            "application/json")
-                    };
-                    var response = await httpClient.SendAsync(request);
-
-                    var responseString = response.Content.ReadAsStringAsync();
-
-                    //method for parsing newsText to words
-                    List<string> ExtractFromBody(string body, string start, string end)
+                    int start = newsText.IndexOf("<script type=\"text/javascript\">");
+                    int end = newsText.IndexOf("</script>");
+                    if (start != -1 && end != -1)
                     {
-                        List<string> matched = new List<string>();
+                        newsText = newsText.Substring(0, start) + "" +
+                          newsText.Substring(end + 9);
+                    }
 
-                        int indexStart = 0;
-                        int indexEnd = 0;
+                    newsText = StripHTML(newsText);
+                    newsText = newsText.Replace("\t", "").Replace("\n", "").Replace("\r", "");
 
-                        bool exit = false;
-                        while (!exit)
+                    //Send POST request to do lemmatization
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders
+                            .Accept
+                            .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
+
+                        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=62e6440e1c9e5853620c0dd4ea3854b5e785b0eb")
                         {
-                            indexStart = body.IndexOf(start);
+                            Content = new StringContent("[{\"text\":\"" + newsText + "\"}]",
 
-                            if (indexStart != -1)
+                                Encoding.UTF8,
+                                "application/json")
+                        };
+                        var response = await httpClient.SendAsync(request);
+
+                        var responseString = response.Content.ReadAsStringAsync();
+
+                        //method for parsing newsText to words
+                        List<string> ExtractFromBody(string body, string start, string end)
+                        {
+                            List<string> matched = new List<string>();
+
+                            int indexStart = 0;
+                            int indexEnd = 0;
+
+                            bool exit = false;
+                            while (!exit)
                             {
-                                indexEnd = indexStart + body.Substring(indexStart).IndexOf(end);
+                                indexStart = body.IndexOf(start);
 
-                                matched.Add(body.Substring(indexStart + start.Length, indexEnd - indexStart - start.Length));
+                                if (indexStart != -1)
+                                {
+                                    indexEnd = indexStart + body.Substring(indexStart).IndexOf(end);
 
-                                body = body.Substring(indexEnd + end.Length);
+                                    matched.Add(body.Substring(indexStart + start.Length, indexEnd - indexStart - start.Length));
+
+                                    body = body.Substring(indexEnd + end.Length);
+                                }
+                                else
+                                {
+                                    exit = true;
+                                }
                             }
-                            else
+
+                            return matched;
+                        }
+
+                        //Get List of words from newsText
+                        List<string> wordsFromTheResponseString = ExtractFromBody(responseString.Result, "\"value\":\"", "\"}");
+
+                        //Update News with a new GoodnessCoefficient
+                        double sum = 0;
+                        double number = 0;
+                        foreach (var item in wordsFromTheResponseString)
+                        {
+                            if (coefficients.CoefficientsForEachWord.ContainsKey(item))
                             {
-                                exit = true;
+                                sum += coefficients.CoefficientsForEachWord[item];
+                                number += 1;
                             }
                         }
-
-                        return matched;
-                    }
-
-                    //Get List of words from newsText
-                    List<string> wordsFromTheResponseString = ExtractFromBody(responseString.Result, "\"value\":\"", "\"}");
-
-                    //Update News with a new GoodnessCoefficient
-                    double sum = 0;
-                    double number = 0;
-                    foreach (var item in wordsFromTheResponseString)
-                    {
-                        if (coefficients.CoefficientsForEachWord.ContainsKey(item))
+                        if (number != 0)
                         {
-                            sum += coefficients.CoefficientsForEachWord[item];
-                            number += 1;
+                            singleNews.GoodnessCoefficient = Math.Round(sum / number);
                         }
-                    }
-                    if (number != 0)
-                    {
-                        singleNews.GoodnessCoefficient = Math.Round(sum/number);
-                    }
-                    else
-                    {
-                        singleNews.GoodnessCoefficient = 0;
-                    }                   
-
-                    int res = await _mediator.Send(new EditNewsCommand()
-                    {
-                        News = new NewsDto
+                        else
                         {
-                            Id = singleNews.Id,
-                            Address = singleNews.Address,
-                            Description = singleNews.Description,
-                            GoodnessCoefficient = singleNews.GoodnessCoefficient,
-                            PublicationDate = singleNews.PublicationDate,
-                            RSS_Id = singleNews.RSS_Id,
-                            Text = singleNews.Text,
-                            Title = singleNews.Title
+                            singleNews.GoodnessCoefficient = 0;
                         }
-                    });
+
+                        int res = await _mediator.Send(new EditNewsCommand()
+                        {
+                            News = new NewsDto
+                            {
+                                Id = singleNews.Id,
+                                Address = singleNews.Address,
+                                Description = singleNews.Description,
+                                GoodnessCoefficient = singleNews.GoodnessCoefficient,
+                                PublicationDate = singleNews.PublicationDate,
+                                RSS_Id = singleNews.RSS_Id,
+                                Text = singleNews.Text,
+                                Title = singleNews.Title
+                            }
+                        });
+                    }
+                    if (iteration % 15 == 0)
+                    {
+                        await Task.Delay(61000);
+                    }
                 }
-                if (iteration%15==0)
-                {
-                    await Task.Delay(61000);
-                }                
             }
+            catch (Exception e)
+            {
+                Log.Error(e, "RateNews was not successful");
+                throw;
+            }            
         }
     }
 

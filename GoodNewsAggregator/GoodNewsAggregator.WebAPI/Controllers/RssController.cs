@@ -1,10 +1,8 @@
-﻿using GoodNewsAggregator.Core.DataTransferObjects;
-using GoodNewsAggregator.Core.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using GoodNewsAggregator.Core.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
@@ -20,25 +18,50 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             _rssService = rssService;
         }
 
+        /// <summary>
+        /// Get RSS by rss id. Admin.
+        /// </summary>
+        /// <param name="id"></param> 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var rss = await _rssService.FindRssById(id);
-            if (rss != null)
+            try
             {
-                return Ok(rss);
+                var rss = await _rssService.FindRssById(id);
+                if (rss != null)
+                {
+                    return Ok(rss);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
+            catch (Exception e)
             {
-                return NotFound();
-            }
+                Log.Error(e, "RssController Get was not successful");
+                throw;
+            }            
         }
 
+        /// <summary>
+        /// Get all RSSes. Admin.
+        /// </summary>
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Get()
         {
-            var rsses = await _rssService.FindRss();
-            return Ok(rsses);
+            try
+            {
+                var rsses = await _rssService.FindRss();
+                return Ok(rsses);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "RssController Get was not successful");
+                throw;
+            }            
         }
 
         //[HttpPatch("{id}")]

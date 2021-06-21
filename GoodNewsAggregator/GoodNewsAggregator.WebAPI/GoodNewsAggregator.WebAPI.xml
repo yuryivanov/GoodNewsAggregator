@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GoodNewsAggregator.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Get(System.Guid)">
+            <summary>
+            Gets comments by news id. User.
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.CommentController.Post(GoodNewsAggregator.Core.DataTransferObjects.CommentDto)">
+            <summary>
+            Add a comment. User.
+            </summary>
+            <param name="comment"></param>    
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.NewsController.Get(System.Nullable{System.Guid})">
+            <summary>
+            Get news by news id. Anonymous.
+            </summary>
+            <param name="id"></param>    
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.NewsController.Get">
+            <summary>
+            Get all news. Anonymous.
+            </summary>         
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.NewsController.Post(System.Collections.Generic.IEnumerable{GoodNewsAggregator.Core.DataTransferObjects.NewsDto})">
+            <summary>
+            Add news collection. Admin.
+            </summary>
+            <param name="news"></param>    
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.RssController.Get(System.Guid)">
+            <summary>
+            Get RSS by rss id. Admin.
+            </summary>
+            <param name="id"></param> 
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.RssController.Get">
+            <summary>
+            Get all RSSes. Admin.
+            </summary>
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.TokenController.Login(GoodNewsAggregator.WebAPI.Controllers.LoginRequest)">
+            <summary>
+            Log in the application. Anonymous.
+            </summary>
+            <param name="request"></param> 
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.TokenController.Register(GoodNewsAggregator.Models.ViewModels.Account.RegisterViewModel)">
+            <summary>
+            Register in the application. Anonymous.
+            </summary>
+            <param name="request"></param> 
+        </member>
+        <member name="M:GoodNewsAggregator.WebAPI.Controllers.TokenController.RefreshToken(GoodNewsAggregator.WebAPI.Auth.JwtAuthResult)">
+            <summary>
+            Refresh tokens. Anonymous.
+            </summary>
+            <param name="jwtAuthResult"></param> 
+        </member>
+    </members>
+</doc>

@@ -4,13 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DataTransferObjects;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core;
-using GoodNewsAggregator.DAL.Core.Entities;
-using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
-using System.Xml;
-using System.ServiceModel.Syndication;
+using Serilog;
 
 namespace GoodNewsAggregator.Services.Implementation
 {
@@ -24,34 +20,50 @@ namespace GoodNewsAggregator.Services.Implementation
 
         public async Task<IEnumerable<RSSDto>> FindRss()
         {
-            var rSSes = await _unitOfWork.RSS.FindBy(n
+            try
+            {
+                var rSSes = await _unitOfWork.RSS.FindBy(n
                         => n.Id.Equals(n.Id))
                     .ToListAsync();
 
 
-            return rSSes.Select(n => new RSSDto()
+                return rSSes.Select(n => new RSSDto()
+                {
+                    Id = n.Id,
+                    Address = n.Address
+                }).ToList();
+            }
+            catch (Exception e)
             {
-                Id = n.Id,
-                Address = n.Address
-            }).ToList();
+                Log.Error(e, "FindRss was not successful");
+                throw;
+            }            
         }
 
         public async Task<RSSDto> FindRssById(Guid id)
         {
-            var rSS = await _unitOfWork.RSS.GetEntityById(id);
+            try
+            {
+                var rSS = await _unitOfWork.RSS.GetEntityById(id);
 
-            if (rSS != null)
-            {
-                return new RSSDto()
+                if (rSS != null)
                 {
-                    Id = rSS.Id,
-                    Address = rSS.Address
-                };
+                    return new RSSDto()
+                    {
+                        Id = rSS.Id,
+                        Address = rSS.Address
+                    };
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
+            catch (Exception e)
             {
-                return null;
-            }            
+                Log.Error(e, "FindRssById was not successful");
+                throw;
+            }                     
         }
     }
 }

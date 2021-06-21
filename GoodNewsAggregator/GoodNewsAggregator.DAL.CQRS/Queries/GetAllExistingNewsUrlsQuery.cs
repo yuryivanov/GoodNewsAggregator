@@ -1,8 +1,5 @@
-﻿using GoodNewsAggregator.Core.DataTransferObjects;
-using MediatR;
-using System;
+﻿using MediatR;
 using System.Collections.Generic;
-using System.Text;
 
 namespace GoodNewsAggregator.DAL.CQRS.Queries
 {

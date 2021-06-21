@@ -2,31 +2,29 @@ using AutoMapper;
 using GoodNewsAggregator.Core.Services.Interfaces;
 using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.CQRS.CommandHandlers;
-using GoodNewsAggregator.DAL.CQRS.Queries;
 using GoodNewsAggregator.DAL.CQRS.QueryHandlers;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
 using GoodNewsAggregator.DAL.Repositories.Implementation.Repositories;
 using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using GoodNewsAggregator.Services.Implementation;
+using GoodNewsAggregator.WebAPI.Auth;
 using Hangfire;
 using Hangfire.SqlServer;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NewsAggregators.Services.Implementation.Mapping;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Text;
 
 
 namespace GoodNewsAggregator.WebAPI
@@ -56,14 +54,16 @@ namespace GoodNewsAggregator.WebAPI
 
             services.AddScoped<INewsService, NewsCqsService>();
             services.AddScoped<IRSSService, RssCqsService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserService, UserCqsService>();
             services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ICommentService, CommentCqsService>();
 
             services.AddScoped<IWebPageParser, OnlinerParser>();
             services.AddScoped<IWebPageParser, TutByParser>();
             services.AddScoped<IWebPageParser, S13Parser>();
             services.AddScoped<IWebPageParser, FourPdaParser>();
+
+            services.AddScoped<IJwtAuthManager, JwtAuthManager>();
 
             services.AddTransient<OnlinerParser>();
             services.AddTransient<TutByParser>();
@@ -101,14 +101,47 @@ namespace GoodNewsAggregator.WebAPI
             services.AddMediatR(typeof(GetAllExistingNewsUrlsQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetAllNewsQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetNewsCommentsByNewsIdQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(AddCommentByNewsIdCommandHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(GetUserByEmailQueryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(GetAccessTokenByTokenStringQueryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(GetRefreshTokenByIdQueryHandler).GetTypeInfo().Assembly);
+
+            services.AddMediatR(typeof(AddCommentCommandHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(EditNewsCommandHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(AddRangeNewsCommandHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(AddUserCommandHandler).GetTypeInfo().Assembly);            
+            services.AddMediatR(typeof(AddRefreshTokenCommandHandler).GetTypeInfo().Assembly);            
+            services.AddMediatR(typeof(AddAccessTokenCommandHandler).GetTypeInfo().Assembly);                             
 
+            services.AddAuthentication(opt=>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(opt=>
+            {
+                opt.RequireHttpsMetadata = false;
+                opt.SaveToken = true;
+                opt.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    //true - encode our key:
+                    ValidateIssuerSigningKey = true,
+                    //Encode out key using this key:
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                    //we don't wanna validate for what this key was given:
+                    ValidateIssuer = false,
+                    //we don't wanna validate who(our app) gave this key:
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero //Validate expireAt time
+                };
+            });
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GoodNewsAggregator.WebAPI", Version = "v1" });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.XML";
+                var xmlPath = Path.Combine(xmlFile);
+
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -125,12 +158,14 @@ namespace GoodNewsAggregator.WebAPI
 
                 var newsCqsService = serviceProvider.GetService(typeof(INewsService)) as INewsService;
                 RecurringJob.AddOrUpdate(() => newsCqsService.RateNews(), "0,15,30,45 * * * *");
+                RecurringJob.AddOrUpdate(() => newsCqsService.Aggregate(), Cron.Hourly());
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

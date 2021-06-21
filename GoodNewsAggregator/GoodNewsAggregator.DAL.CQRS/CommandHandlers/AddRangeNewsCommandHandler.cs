@@ -3,6 +3,7 @@ using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.DAL.CQRS.Commands;
 using MediatR;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +25,20 @@ namespace GoodNewsAggregator.DAL.CQRS.CommandHandlers
         }
 
         public async Task<int> Handle(AddRangeNewsCommand request, CancellationToken cancellationToken)
-        {
-            var addedNews = request.News.Select(n => _mapper.Map<News>(n)).ToList();
+        {            
+            try
+            {
+                var addedNews = request.News.Select(n => _mapper.Map<News>(n)).ToList();
 
-            await _dbContext.News.AddRangeAsync(addedNews, cancellationToken);
-            //How many records in db are changed, if 0 - request failed
-            return await _dbContext.SaveChangesAsync(cancellationToken);
+                await _dbContext.News.AddRangeAsync(addedNews, cancellationToken);
+                //How many records in db are changed, if 0 - request failed
+                return await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "AddRangeNewsCommandHandler was not successful");
+                throw;
+            }
         }
     }
 }

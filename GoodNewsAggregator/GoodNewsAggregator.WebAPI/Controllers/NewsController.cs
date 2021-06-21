@@ -1,10 +1,10 @@
 ﻿using GoodNewsAggregator.Core.DataTransferObjects;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.WebAPI.Controllers
@@ -20,35 +20,65 @@ namespace GoodNewsAggregator.WebAPI.Controllers
             _newsService = newsService;
         }
 
+        /// <summary>
+        /// Get news by news id. Anonymous.
+        /// </summary>
+        /// <param name="id"></param>    
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid? id)
         {
-            if (id == null)
+            try
             {
-                return BadRequest();
-            }
-            else
-            {
-                var news = await _newsService.GetNewsWithRSSAddressById(id);
-                if (news !=null)
+                if (id == null)
                 {
-                    return Ok(news);
+                    return BadRequest();
                 }
                 else
                 {
-                    return NotFound();
-                }               
+                    var news = await _newsService.GetNewsWithRSSAddressById(id);
+                    if (news != null)
+                    {
+                        return Ok(news);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
             }
+            catch (Exception e)
+            {
+                Log.Error(e, "NewsController Get was not successful");
+                throw;
+            }            
         }
 
+        /// <summary>
+        /// Get all news. Anonymous.
+        /// </summary>         
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var news = await _newsService.GetNewsWithRSSAddressById(null);
-            return Ok(news);
+            try
+            {
+                var news = await _newsService.GetNewsWithRSSAddressById(null);
+                return Ok(news);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "NewsController Get was not successful");
+                throw;
+            }            
         }
 
+        /// <summary>
+        /// Add news collection. Admin.
+        /// </summary>
+        /// <param name="news"></param>    
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post(IEnumerable<NewsDto> news)
         {
             try
@@ -63,9 +93,10 @@ namespace GoodNewsAggregator.WebAPI.Controllers
                     return BadRequest();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest();
+                Log.Error(e, "NewsController Post was not successful");
+                throw;
             }
         }
     }

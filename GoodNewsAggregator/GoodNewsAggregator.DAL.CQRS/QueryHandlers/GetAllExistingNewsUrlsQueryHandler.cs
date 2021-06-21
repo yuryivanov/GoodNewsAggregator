@@ -3,14 +3,11 @@ using GoodNewsAggregator.DAL.CQRS.Queries;
 using GoodNewsAggregator.DAL.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using GoodNewsAggregator.DAL.Core.Entities;
-using GoodNewsAggregator.Core.DataTransferObjects;
-using AutoMapper;
 using MediatR;
 using System.Threading;
 using System.Linq;
+using Serilog;
 
 namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers
 {
@@ -25,10 +22,17 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers
 
         public async Task<List<string>> Handle(GetAllExistingNewsUrlsQuery request, CancellationToken cancellationToken)
         {
-
-            return await _dbContext.News
+            try
+            {
+                return await _dbContext.News
                 .Select(news => news.Address)
                 .ToListAsync(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "GetAllExistingNewsUrlsQueryHandler was not successful");
+                throw;
+            }            
         }
     }
 }

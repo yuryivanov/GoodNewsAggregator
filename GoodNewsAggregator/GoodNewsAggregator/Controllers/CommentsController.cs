@@ -1,18 +1,10 @@
 ﻿using GoodNewsAggregator.Core.DataTransferObjects;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Repositories.Implementation;
-using GoodNewsAggregator.Models.ViewModels.Account;
 using GoodNewsAggregator.Models.ViewModels.Comment;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.Controllers
@@ -32,24 +24,9 @@ namespace GoodNewsAggregator.Controllers
 
         public async Task<IActionResult> List(Guid newsId)
         {
-            var comments = await _commentService.FindCommentsByNewsId(newsId);
-
-            return View(new CommentsListViewModel
+            try
             {
-            NewsId = newsId,
-            Comments = comments
-            });
-        }
-
-        public async Task<IActionResult> CreateCommentPartial(Guid newsId)
-        {
-            var comments = await _commentService.FindCommentsByNewsId(newsId);
-
-            if (HttpContext.User.Identity.Name != null)
-            {
-                var userEmail = HttpContext.User.Identity.Name;
-                var user = await _userService.GetUserByEmail(userEmail);
-                var userRoleName = _roleService.FindRoleById(user.RoleId).Result.Name;
+                var comments = await _commentService.FindCommentsByNewsId(newsId);
 
                 return View(new CommentsListViewModel
                 {
@@ -57,33 +34,72 @@ namespace GoodNewsAggregator.Controllers
                     Comments = comments
                 });
             }
-            else
+            catch (Exception e)
             {
-                return Ok();
+                Log.Error(e, "List was not successful");
+                throw;
+            }            
+        }
+
+        public async Task<IActionResult> CreateCommentPartial(Guid newsId)
+        {
+            try
+            {
+                var comments = await _commentService.FindCommentsByNewsId(newsId);
+
+                if (HttpContext.User.Identity.Name != null)
+                {
+                    var userEmail = HttpContext.User.Identity.Name;
+                    var user = await _userService.GetUserByEmail(userEmail);
+                    var userRoleName = _roleService.FindRoleById(user.RoleId).Result.Name;
+
+                    return View(new CommentsListViewModel
+                    {
+                        NewsId = newsId,
+                        Comments = comments
+                    });
+                }
+                else
+                {
+                    return Ok();
+                }
             }
+            catch (Exception e)
+            {
+                Log.Error(e, "CreateCommentPartial was not successful");
+                throw;
+            }            
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]CreateCommentViewModel comment)
         {
-            var userEmail = HttpContext.User.Identity.Name;
-            var user = await _userService.GetUserByEmail(userEmail);
-            var userRoleName = _roleService.FindRoleById(user.RoleId).Result.Name;
-
-            CommentDto commentDto = new CommentDto()
+            try
             {
-                FullName = user.FullName,
-                Id = new Guid(),
-                NewsId = comment.NewsId,
-                PublicationDate = DateTime.Now,
-                Text = comment.CommentText,
-                UserId = user.Id
-            };
+                var userEmail = HttpContext.User.Identity.Name;
+                var user = await _userService.GetUserByEmail(userEmail);
+                var userRoleName = _roleService.FindRoleById(user.RoleId).Result.Name;
 
-            await _commentService.AddComment(commentDto);
+                CommentDto commentDto = new CommentDto()
+                {
+                    FullName = user.FullName,
+                    Id = new Guid(),
+                    NewsId = comment.NewsId,
+                    PublicationDate = DateTime.Now,
+                    Text = comment.CommentText,
+                    UserId = user.Id
+                };
 
-            return Ok();
+                await _commentService.AddComment(commentDto);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Create was not successful");
+                throw;
+            }           
         }
     }
 }

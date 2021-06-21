@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using GoodNewsAggregator.Core.Services.Interfaces;
+using Serilog;
 
 namespace GoodNewsAggregator.Services.Implementation
 {
@@ -9,29 +10,37 @@ namespace GoodNewsAggregator.Services.Implementation
     {
         public async Task<string> Parse(string url)
         {
-            var web = new HtmlWeb();
-
-            var htmlDoc = web.LoadFromWebAsync(url);
-
-            var htmlDocResult = htmlDoc.Result;
-
-            var node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='article']");
-
-            if (node == null)
+            try
             {
-                node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='content-box']");
-            }
+                var web = new HtmlWeb();
 
-            if (node != null)
+                var htmlDoc = web.LoadFromWebAsync(url);
+
+                var htmlDocResult = htmlDoc.Result;
+
+                var node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='article']");
+
+                if (node == null)
+                {
+                    node = htmlDocResult.DocumentNode.SelectSingleNode("//div[@class='content-box']");
+                }
+
+                if (node != null)
+                {
+                    node.InnerHtml = node.InnerHtml.Replace("<div class=\"article-meta\">",
+                        "<div class=\"article-meta\" style=\"display: none;\">");
+                    node.InnerHtml = node.InnerHtml.Replace("<ul", "<text");
+                    node.InnerHtml = node.InnerHtml.Replace("</ul", "</text");
+
+                    return node.InnerHtml;
+                }
+                return null;
+            }
+            catch (Exception e)
             {
-                node.InnerHtml = node.InnerHtml.Replace("<div class=\"article-meta\">",
-                    "<div class=\"article-meta\" style=\"display: none;\">");
-                node.InnerHtml = node.InnerHtml.Replace("<ul", "<text");
-                node.InnerHtml = node.InnerHtml.Replace("</ul", "</text");
-
-                return node.InnerHtml;
-            }
-            return null;
+                Log.Error(e, "FourPdaParser was not successful");
+                throw;
+            }            
         }
     }
 }

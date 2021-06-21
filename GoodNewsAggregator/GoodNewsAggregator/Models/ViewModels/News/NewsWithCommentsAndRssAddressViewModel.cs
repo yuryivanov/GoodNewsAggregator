@@ -1,9 +1,6 @@
 ﻿using GoodNewsAggregator.Core.DataTransferObjects;
-using GoodNewsAggregator.Models.ViewModels.Account;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.Models.ViewModels.News
 {

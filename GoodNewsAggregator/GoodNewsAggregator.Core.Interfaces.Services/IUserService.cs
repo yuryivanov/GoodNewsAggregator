@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DataTransferObjects;
@@ -13,6 +12,10 @@ namespace GoodNewsAggregator.Core.Services.Interfaces
         string GetPasswordHash(string modelPassword);
         Task<bool> RegisterUser(UserDto model);
         Task<UserDto> GetUserByEmail(string email);
+        Task<int> AddAccessToken(AccessTokenDto accessTokenDto);
+        Task<int> AddRefreshToken(RefreshTokenDto refreshTokenDto);
+        Task<AccessTokenDto> GetAccessTokenByTokenString(string token);
+        Task<RefreshTokenDto> GetRefreshTokenById(Guid id);
 
         //Task<IEnumerable<RSSDto>> GetRssByNewsId(Guid? id);
         //Task<RSSDto> GetRssById(Guid? id);

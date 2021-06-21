@@ -4,17 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DataTransferObjects;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
-using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
-using System.Xml;
-using System.ServiceModel.Syndication;
-using System.Text;
-using System.Security.Cryptography;
 using Serilog;
-using AutoMapper;
 
 namespace GoodNewsAggregator.Services.Implementation
 {
@@ -28,32 +21,48 @@ namespace GoodNewsAggregator.Services.Implementation
 
         public async Task<IEnumerable<CommentDto>> FindCommentsByNewsId(Guid id)
         {
-            var comments = await _unitOfWork.Comments.FindBy(comment => comment.NewsId.Equals(id)).OrderBy(comments=> comments.PublicationDate).ToListAsync();
-
-            return comments.Select(comment => new CommentDto()
+            try
             {
-                Id = comment.Id,
-                NewsId = comment.NewsId,
-                PublicationDate = comment.PublicationDate,
-                Text = comment.Text,
-                UserId = comment.UserId,
-                FullName = (_unitOfWork.Users.FindBy(user => user.Id.Equals(comment.UserId)).FirstOrDefaultAsync()).Result.FullName
-            }).ToList();
+                var comments = await _unitOfWork.Comments.FindBy(comment => comment.NewsId.Equals(id)).OrderBy(comments => comments.PublicationDate).ToListAsync();
+
+                return comments.Select(comment => new CommentDto()
+                {
+                    Id = comment.Id,
+                    NewsId = comment.NewsId,
+                    PublicationDate = comment.PublicationDate,
+                    Text = comment.Text,
+                    UserId = comment.UserId,
+                    FullName = (_unitOfWork.Users.FindBy(user => user.Id.Equals(comment.UserId)).FirstOrDefaultAsync()).Result.FullName
+                }).ToList();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "FindCommentsByNewsId was not successful");
+                throw;
+            }           
         }
 
         public async Task<CommentDto> FindCommentById(Guid id)
         {
-            var comment = await _unitOfWork.Comments.FindBy(comment => comment.Id.Equals(id)).FirstOrDefaultAsync();
-
-            return new CommentDto()
+            try
             {
-                Id = comment.Id,
-                NewsId = comment.NewsId,
-                PublicationDate = comment.PublicationDate,
-                Text = comment.Text,
-                UserId = comment.UserId,
-                FullName = (_unitOfWork.Users.FindBy(user => user.Id.Equals(comment.UserId)).FirstOrDefaultAsync()).Result.FullName
-            };
+                var comment = await _unitOfWork.Comments.FindBy(comment => comment.Id.Equals(id)).FirstOrDefaultAsync();
+
+                return new CommentDto()
+                {
+                    Id = comment.Id,
+                    NewsId = comment.NewsId,
+                    PublicationDate = comment.PublicationDate,
+                    Text = comment.Text,
+                    UserId = comment.UserId,
+                    FullName = (_unitOfWork.Users.FindBy(user => user.Id.Equals(comment.UserId)).FirstOrDefaultAsync()).Result.FullName
+                };
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "FindCommentById was not successful");
+                throw;
+            }            
         }
 
         public async Task<bool> AddComment(CommentDto comment)
@@ -68,7 +77,8 @@ namespace GoodNewsAggregator.Services.Implementation
                         NewsId = comment.NewsId,
                         PublicationDate = comment.PublicationDate,
                         Text = comment.Text,
-                        UserId = comment.UserId
+                        UserId = comment.UserId,
+                        FullName = comment.FullName
                     });
 
                     await _unitOfWork.SaveChangesAsync();

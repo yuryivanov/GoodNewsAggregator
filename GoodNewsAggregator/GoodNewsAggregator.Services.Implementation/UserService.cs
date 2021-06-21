@@ -4,13 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNewsAggregator.Core.DataTransferObjects;
 using GoodNewsAggregator.Core.Services.Interfaces;
-using GoodNewsAggregator.DAL.Core;
 using GoodNewsAggregator.DAL.Core.Entities;
-using GoodNewsAggregator.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using GoodNewsAggregator.DAL.Repositories.Implementation;
-using System.Xml;
-using System.ServiceModel.Syndication;
 using System.Text;
 using System.Security.Cryptography;
 using Serilog;
@@ -27,41 +23,65 @@ namespace GoodNewsAggregator.Services.Implementation
 
         public async Task<UserDto> FindUserById(Guid id)
         {
-            var user = await _unitOfWork.Users.GetEntityById(id);
-
-            return new UserDto()
+            try
             {
-                Id = user.Id,
-                Email = user.Email,
-                FullName = user.FullName,
-                PasswordHash = user.PasswordHash,
-                RoleId = user.RoleId
-            };
+                var user = await _unitOfWork.Users.GetEntityById(id);
+
+                return new UserDto()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FullName = user.FullName,
+                    PasswordHash = user.PasswordHash,
+                    RoleId = user.RoleId
+                };
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "FindUserById was not successful");
+                throw;
+            }            
         }
 
         public async Task<IEnumerable<UserDto>> FindUsers()
         {
-            var users = await _unitOfWork.Users.FindBy(n
+            try
+            {
+                var users = await _unitOfWork.Users.FindBy(n
                         => n.Id.Equals(n.Id))
                     .ToListAsync();
 
 
-            return users.Select(n => new UserDto()
+                return users.Select(n => new UserDto()
+                {
+                    Id = n.Id,
+                    Email = n.Email,
+                    FullName = n.FullName,
+                    PasswordHash = n.PasswordHash,
+                    RoleId = n.RoleId
+                }).ToList();
+            }
+            catch (Exception e)
             {
-                Id = n.Id,
-                Email = n.Email,
-                FullName = n.FullName,
-                PasswordHash = n.PasswordHash,
-                RoleId = n.RoleId
-            }).ToList();
+                Log.Error(e, "FindUsers was not successful");
+                throw;
+            }            
         }
 
         public string GetPasswordHash(string modelPassword)
         {
-            var sha256 = new SHA256CryptoServiceProvider();
-            var sha256data = sha256.ComputeHash(Encoding.UTF8.GetBytes(modelPassword));
-            var hashedPassword = Encoding.UTF8.GetString(sha256data);
-            return hashedPassword;
+            try
+            {
+                var sha256 = new SHA256CryptoServiceProvider();
+                var sha256data = sha256.ComputeHash(Encoding.UTF8.GetBytes(modelPassword));
+                var hashedPassword = Encoding.UTF8.GetString(sha256data);
+                return hashedPassword;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "GetPasswordHash was not successful");
+                throw;
+            }            
         }
 
         public async Task<bool> RegisterUser(UserDto model)
@@ -84,7 +104,7 @@ namespace GoodNewsAggregator.Services.Implementation
             }
             catch (Exception e)
             {
-                Log.Error(e, "Register was not successful");
+                Log.Error(e, "RegisterUser was not successful");
                 return false;
             }
         }
@@ -117,6 +137,26 @@ namespace GoodNewsAggregator.Services.Implementation
                 Log.Error(e, "GetUserByEmail wasn't successfull");
                 throw;
             }
+        }
+
+        public Task<int> AddAccessToken(AccessTokenDto accessTokenDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> AddRefreshToken(RefreshTokenDto refreshTokenDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AccessTokenDto> GetAccessTokenByTokenString(string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RefreshTokenDto> GetRefreshTokenById(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

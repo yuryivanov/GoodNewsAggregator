@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoodNewsAggregator
 {
@@ -35,19 +33,27 @@ namespace GoodNewsAggregator
             //}
             //else
             //{
-            var userAgent = context.HttpContext.Request.Headers["User-Agent"].ToString();
-            if (!userAgent.Contains("Chrome/"))
+            try
             {
-                //Just return string:
-                context.Result = new ContentResult()
+                var userAgent = context.HttpContext.Request.Headers["User-Agent"].ToString();
+                if (!userAgent.Contains("Chrome/"))
                 {
-                    Content = "Извините, этот браузер не поддерживается сайтом. Пожалуйста, используйте Google Chrome браузер."
-                };
+                    //Just return string:
+                    context.Result = new ContentResult()
+                    {
+                        Content = "Извините, этот браузер не поддерживается сайтом. Пожалуйста, используйте Google Chrome браузер."
+                    };
 
-                //Or another variant - Return View, it doesn't work, don't know why:
-                //context.Result = new RedirectToActionResult("NotSupportedBrowserPage", "Home", null);
+                    //Or another variant - Return View, it doesn't work, don't know why:
+                    //context.Result = new RedirectToActionResult("NotSupportedBrowserPage", "Home", null);
+                }
+                //}        
             }
-            //}        
+            catch (Exception e)
+            {
+                Log.Error(e, "AddCommentCommandHandler was not successful");
+                throw;
+            }            
         }
 
         //2nd entrance

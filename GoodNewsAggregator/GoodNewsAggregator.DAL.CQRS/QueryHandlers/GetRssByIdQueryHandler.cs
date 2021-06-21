@@ -2,14 +2,12 @@
 using GoodNewsAggregator.DAL.CQRS.Queries;
 using GoodNewsAggregator.DAL.Core;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using GoodNewsAggregator.DAL.Core.Entities;
 using GoodNewsAggregator.Core.DataTransferObjects;
 using AutoMapper;
 using MediatR;
 using System.Threading;
+using Serilog;
 
 namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers
 {
@@ -26,7 +24,15 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers
 
         public async Task<RSSDto> Handle(GetRssByIdQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<RSSDto>(await _dbContext.RSS.FirstOrDefaultAsync(rss => rss.Id.Equals(request.Id), cancellationToken));
+            try
+            {
+                return _mapper.Map<RSSDto>(await _dbContext.RSS.FirstOrDefaultAsync(rss => rss.Id.Equals(request.Id), cancellationToken));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "GetRssByIdQueryHandler was not successful");
+                throw;
+            }            
         }
     }
 }

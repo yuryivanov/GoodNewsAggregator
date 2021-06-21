@@ -4,11 +4,9 @@ using GoodNewsAggregator.Models.ViewModels.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -36,26 +34,34 @@ namespace GoodNewsAggregator.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
-        {           
-            if (ModelState.IsValid)
+        {
+            try
             {
-                var passwordHash = _userService.GetPasswordHash(model.Password);
-
-                var result = await _userService.RegisterUser(new UserDto()
+                if (ModelState.IsValid)
                 {
-                    Id = new Guid(),
-                    PasswordHash = passwordHash,
-                    Email = model.Email,
-                    FullName = model.FullName
-                });
+                    var passwordHash = _userService.GetPasswordHash(model.Password);
 
-                //if (result)
-                //{
-                return RedirectToAction("AllNews", "News");
-                //}
-                //return BadRequest();
+                    var result = await _userService.RegisterUser(new UserDto()
+                    {
+                        Id = new Guid(),
+                        PasswordHash = passwordHash,
+                        Email = model.Email,
+                        FullName = model.FullName
+                    });
+
+                    //if (result)
+                    //{
+                    return RedirectToAction("AllNews", "News");
+                    //}
+                    //return BadRequest();
+                }
+                return View(model);
             }
-            return View(model);
+            catch (Exception e)
+            {
+                Log.Error(e, "Register was not successful");
+                throw;
+            }            
         }
 
         [HttpGet]
@@ -68,23 +74,31 @@ namespace GoodNewsAggregator.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var userFromDb = await _userService.GetUserByEmail(model.Email);
-                if (userFromDb != null)
+                if (ModelState.IsValid)
                 {
-                    var passwordHash = _userService.GetPasswordHash(model.Password);
-                    if (passwordHash.Equals(userFromDb.PasswordHash))
+                    var userFromDb = await _userService.GetUserByEmail(model.Email);
+                    if (userFromDb != null)
                     {
-                        await Authenticate(userFromDb);
+                        var passwordHash = _userService.GetPasswordHash(model.Password);
+                        if (passwordHash.Equals(userFromDb.PasswordHash))
+                        {
+                            await Authenticate(userFromDb);
 
-                        return string.IsNullOrEmpty(model.ReturnUrl)
-                            ? (IActionResult)RedirectToAction("AllNews", "News")
-                            : Redirect(model.ReturnUrl);
+                            return string.IsNullOrEmpty(model.ReturnUrl)
+                                ? (IActionResult)RedirectToAction("AllNews", "News")
+                                : Redirect(model.ReturnUrl);
+                        }
                     }
                 }
+                return View(model);
             }
-            return View(model);
+            catch (Exception e)
+            {
+                Log.Error(e, "Login was not successful");
+                throw;
+            }            
         }
 
         private async Task Authenticate(UserDto dto)
@@ -115,16 +129,32 @@ namespace GoodNewsAggregator.Controllers
         [HttpGet]
         public async Task<IActionResult> LogOut()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("AllNews", "News");
+            try
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("AllNews", "News");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "LogOut was not successful");
+                throw;
+            }            
         }
 
         [AcceptVerbs("Post", "Get")]
         public async Task<IActionResult> CheckEmail(string email)
         {
-            return await _userService.GetUserByEmail(email) != null
+            try
+            {
+                return await _userService.GetUserByEmail(email) != null
             ? Json(false)
                 : Json(true);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "AddCommentCommandHandler was not successful");
+                throw;
+            }            
         }
     }
 }

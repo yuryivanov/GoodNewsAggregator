@@ -19,6 +19,28 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.AccessToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ExpireAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AccessTokens");
+                });
+
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.Comment", b =>
                 {
                     b.Property<Guid>("Id")
@@ -97,6 +119,31 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                     b.ToTable("RSS");
                 });
 
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpireAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -136,6 +183,17 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.AccessToken", b =>
+                {
+                    b.HasOne("GoodNewsAggregator.DAL.Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.Comment", b =>
                 {
                     b.HasOne("GoodNewsAggregator.DAL.Core.Entities.News", "News")
@@ -164,6 +222,17 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                         .IsRequired();
 
                     b.Navigation("RSS");
+                });
+
+            modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("GoodNewsAggregator.DAL.Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GoodNewsAggregator.DAL.Core.Entities.User", b =>

@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
+﻿
 namespace GoodNewsAggregator.Models.ViewModels.News
 {
     public class AggregateNewsViewModel

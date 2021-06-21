@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace GoodNewsAggregator.DAL.CQRS.Commands
 {
-    public class AddCommentByNewsIdCommand : IRequest<int>
+    public class AddCommentCommand : IRequest<int>
     {
-        public Guid Id { get; set; }
+        public CommentDto Comment { get; set; }
     }
 }
