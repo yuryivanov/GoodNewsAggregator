@@ -96,7 +96,7 @@ namespace GoodNewsAggregator.WebAPI
             services.AddSingleton(mapper);
 
             services.AddMediatR(typeof(GetRssByIdQueryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(GetAllRssesQueryHandler).GetTypeInfo().Assembly);            
+            services.AddMediatR(typeof(GetAllRssesQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetNewsByIdWithRssAddressQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetAllExistingNewsUrlsQueryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetAllNewsQueryHandler).GetTypeInfo().Assembly);
@@ -108,15 +108,15 @@ namespace GoodNewsAggregator.WebAPI
             services.AddMediatR(typeof(AddCommentCommandHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(EditNewsCommandHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(AddRangeNewsCommandHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(AddUserCommandHandler).GetTypeInfo().Assembly);            
-            services.AddMediatR(typeof(AddRefreshTokenCommandHandler).GetTypeInfo().Assembly);            
-            services.AddMediatR(typeof(AddAccessTokenCommandHandler).GetTypeInfo().Assembly);                             
+            services.AddMediatR(typeof(AddUserCommandHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(AddRefreshTokenCommandHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(AddAccessTokenCommandHandler).GetTypeInfo().Assembly);
 
-            services.AddAuthentication(opt=>
+            services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(opt=>
+            }).AddJwtBearer(opt =>
             {
                 opt.RequireHttpsMetadata = false;
                 opt.SaveToken = true;
@@ -133,7 +133,16 @@ namespace GoodNewsAggregator.WebAPI
                     ClockSkew = TimeSpan.Zero //Validate expireAt time
                 };
             });
-            
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Default",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -158,12 +167,12 @@ namespace GoodNewsAggregator.WebAPI
 
                 var newsCqsService = serviceProvider.GetService(typeof(INewsService)) as INewsService;
                 RecurringJob.AddOrUpdate(() => newsCqsService.RateNews(), "0,15,30,45 * * * *");
-                RecurringJob.AddOrUpdate(() => newsCqsService.Aggregate(), Cron.Hourly());
+                //RecurringJob.AddOrUpdate(() => newsCqsService.Aggregate(), Cron.Hourly());
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
+            app.UseCors("Default");
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -53,7 +53,7 @@
         <div class="btn-group">
             @Html.CreatePagination(Model.PageInfo, i => Url.Action("AllNews", new { page = i }))
         </div>
-        <pagination page-model="Model.PageInfo" page-action="Index"></pagination>
+        @*<pagination page-model="Model.PageInfo" page-action="Index"></pagination>*@
     </div><br />
     <!-- container -->
 
