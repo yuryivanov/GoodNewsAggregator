@@ -167,7 +167,7 @@ namespace GoodNewsAggregator.WebAPI
 
                 var newsCqsService = serviceProvider.GetService(typeof(INewsService)) as INewsService;
                 RecurringJob.AddOrUpdate(() => newsCqsService.RateNews(), "0,15,30,45 * * * *");
-                //RecurringJob.AddOrUpdate(() => newsCqsService.Aggregate(), Cron.Hourly());
+                RecurringJob.AddOrUpdate(() => newsCqsService.Aggregate(), Cron.Hourly());
             }
 
             app.UseHttpsRedirection();

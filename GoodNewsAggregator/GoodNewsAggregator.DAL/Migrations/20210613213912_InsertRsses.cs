@@ -31,7 +31,6 @@ namespace GoodNewsAggregator.DAL.Core.Migrations
                    new Guid("F68FFBD2-3AE5-4E80-BE43-6021233C6EC9"),
                     "https://4pda.to/feed/"
                });
-
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

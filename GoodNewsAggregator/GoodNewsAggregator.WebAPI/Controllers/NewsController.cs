@@ -60,7 +60,7 @@ namespace GoodNewsAggregator.WebAPI.Controllers
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get()
-        {
+        {              
             try
             {
                 var news = await _newsService.GetNewsWithRSSAddressById(null);

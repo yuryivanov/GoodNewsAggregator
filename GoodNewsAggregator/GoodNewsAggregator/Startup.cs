@@ -18,13 +18,14 @@ using GoodNewsAggregator.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using AutoMapper;
 using NewsAggregators.Services.Implementation.Mapping;
+using GoodNewsAggregator.MiddlewareComponents;
 
 namespace GoodNewsAggregator
 {
     public class Startup
-    {
+    {      
         public Startup(IConfiguration configuration)
-        {
+        {            
             Configuration = configuration;
         }
 
@@ -32,6 +33,7 @@ namespace GoodNewsAggregator
 
         public void ConfigureServices(IServiceCollection services)
         {
+            Console.WriteLine(Configuration["ConnectionStrings:DefaultConnection"]);
             services.AddDbContext<GoodNewsAggregatorContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -96,7 +98,7 @@ namespace GoodNewsAggregator
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+        {           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
