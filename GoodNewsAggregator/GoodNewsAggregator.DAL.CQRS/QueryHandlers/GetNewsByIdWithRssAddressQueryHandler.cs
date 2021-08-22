@@ -51,7 +51,7 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers
                 }
                 else
                 {
-                    var news = await _dbContext.News.Include(news => news.RSS).Where(x => x != null).ToListAsync();
+                    var news = await _dbContext.News.Include(news => news.RSS).Where(x => x != null).ToListAsync(cancellationToken);
 
                     return news.Select(newsWithRSSAddress => new NewsWithRSSAddressDto()
                     {
@@ -71,7 +71,7 @@ namespace GoodNewsAggregator.DAL.CQRS.QueryHandlers
             {
                 Log.Error(e, "GetNewsByIdWithRssAddressQueryHandler was not successful");
                 throw;
-            }            
+            }
         }
     }
 }
