@@ -13,10 +13,10 @@ namespace GoodNewsAggregator.DAL.Core.Entities
 
 
         public Guid NewsId { get; set; }
-        public virtual News News { get; set; }
+        public virtual News News { get; set; } //1 news has the comment
 
         public Guid UserId { get; set; }
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } //1 user has the comment
 
         public string FullName { get; set; }
     }

@@ -10,6 +10,6 @@ namespace GoodNewsAggregator.DAL.Core.Entities
 
         public string Name { get; set; }
 
-        public virtual ICollection<User> UserCollection { get; set; }
+        public virtual ICollection<User> UserCollection { get; set; }  // 1 role for a lot of users
     }
 }

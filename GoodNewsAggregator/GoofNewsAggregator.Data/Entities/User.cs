@@ -15,6 +15,6 @@ namespace GoodNewsAggregator.DAL.Core.Entities
         public Guid RoleId { get; set; }
         public virtual Role Role { get; set; }
 
-        public virtual ICollection<Comment> CommentCollection { get; set; }
+        public virtual ICollection<Comment> CommentCollection { get; set; } // 1 user has a lot of comments
     }
 }
